@@ -2,7 +2,7 @@
 
 namespace axelitus\Acre\Common;
 
-class NumTest extends PHPUnit_Framework_TestCase
+class NumTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
