@@ -34,7 +34,7 @@ class Num
      */
     public static function isInt($val)
     {
-        return !is_numeric($val) or ctype_digit(strval($val));
+        return (is_int($val) or ctype_digit(strval($val)));
     }
 
     /**
