@@ -6,10 +6,12 @@
     "homepage": "http://axelitus.mx/acre",
     "license": "MIT",
     "authors": [
-        "name": "Axel Pardemann",
-        "email": "dev@axelitus.mx",
-        "homepage": "http://axelitus.mx",
-        "role": "Lead Developer"
+        {
+            "name": "Axel Pardemann",
+            "email": "dev@axelitus.mx",
+            "homepage": "http://axelitus.mx",
+            "role": "Lead Developer"
+        }
     ],
     "require": {
         "php": ">=5.3.0"
