@@ -15,8 +15,8 @@ class NumTest extends \PHPUnit_Framework_TestCase
     public function testIsInt()
     {
         $this->assertEquals(true, Num::isInt(5), "5 as int type");
-        $this->assertEquals(true, Num::isInt("9") "9 as string type");
-        $this->assertEquals(false, Num::isInt(3.28) "3.28 as float type");
+        $this->assertEquals(true, Num::isInt("9"), "9 as string type");
+        $this->assertEquals(false, Num::isInt(3.28), "3.28 as float type");
         $this->assertEquals(false, Num::isInt("this is a string"), "A string without numbers");
         $this->assertEquals(false, Num::isInt("1. Although this contains a number is not an int"), "A string with a number");
     }
