@@ -2,7 +2,7 @@
     "name": "axelitus/acre-common",
     "description": "axelitus's Acre common classes.",
     "type": "library",    
-    "keywords": ["common","basic","primitives"],
+    "keywords": ["common","basic","primitives", "string", "number"],
     "homepage": "http://axelitus.mx/acre",
     "license": "MIT",
     "authors": [
@@ -13,6 +13,7 @@
             "role": "Lead Developer"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0"
     },
