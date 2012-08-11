@@ -60,5 +60,5 @@ require 'vendor/autoload.php';
 5. Finally just use the package classes as needed:
 
 ```
-axelitus\Acre\Common\Num::isInt($value);
+axelitus\Acre\Common\<class>::<function>(<params>);
 ```
