@@ -12,6 +12,8 @@
 
 namespace axelitus\Acre\Common;
 
+use InvalidArgumentException;
+
 /**
  * Num Class
  *
@@ -29,6 +31,7 @@ class Num
      * Tests if a value is an integer. This function will find if the given value is an integer regardless of
      * its variable type (as the is_int function does). Even a string containing an integer value will return true.
      *
+     * @static
      * @param   string  $val    The value to be tested
      * @return  bool    Whether the value is an integer regardless of its variable type
      */
@@ -44,12 +47,14 @@ class Num
      * range can be set to have its low and high limits closed (inclusive) or opened (non-inclusive) using the
      * $low_closed and $high_closed parameters (all possible variations: ]a,b[ -or- ]a,b] -or- [a,b[ -or- [a,b]).
      *
-     * @param   numeric     $val            The number to be tested against the range
-     * @param   numeric     $low            The range's low limit
-     * @param   numeric     $high           The range's high limit
-     * @param   bool        $low_closed     Whether the low limit is closed (inclusive)
-     * @param   bool        $high_limit     Whether the high limit is closed (inclusive)
+     * @static
+     * @param   int|float|double    $val            The number to be tested against the range
+     * @param   int|float|double    $low            The range's low limit
+     * @param   int|float|double    $high           The range's high limit
+     * @param   bool                $low_closed     Whether the low limit is closed (inclusive)
+     * @param   bool                $high_closed    Whether the high limit is closed (inclusive)
      * @return  bool    Whether the value is between the given range
+     * @throws \InvalidArgumentException
      */
     public static function between($val, $low, $high, $low_closed = true, $high_closed = true)
     {

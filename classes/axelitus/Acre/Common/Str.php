@@ -12,6 +12,8 @@
 
 namespace axelitus\Acre\Common;
 
+use InvalidArgumentException;
+
 /**
  * Str Class
  *
@@ -179,7 +181,7 @@ class Str
      *
      * Returns a string with the words capitalized. The $encoding parameter is used to determine the input string
      * encoding and thus use the proper method. The function uses mb_convert_case if present and falls back to ucwords.     *
-     * The ucwords function normally doesn't lowercase the input string first, this function does.
+     * The ucwords function normally does not lowercase the input string first, this function does.
      *
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
@@ -205,6 +207,7 @@ class Str
      * @param   bool    $shuffle    Whether to shuffle the character string to increase randomness (entropy)
      * @param   int     $length     The length of the output string
      * @return  string  The random string containing random characters from the $chars string
+     * @throws  \InvalidArgumentException
      */
     public static function random($chars, $shuffle = false, $length = 1)
     {
@@ -242,8 +245,6 @@ class Str
      */
     public static function trandom($type = 'alnum', $shuffle = false, $length = 16)
     {
-        $pool = '';
-
         switch ($type) {
             case 'basic':
                 return mt_rand();
@@ -288,9 +289,10 @@ class Str
      *
      * @param   string  $input              The input string to compare to
      * @param   string  $search             The substring to compare the beginning to
-     * @param   string  $case_sensitive     Whether the comparison is case-sensitive
+     * @param   bool    $case_sensitive     Whether the comparison is case-sensitive
      * @param   string  $encoding           The encoding of the input string
      * @return  bool    Whether the input string begins with the given substring
+     * @throws  \InvalidArgumentException
      */
     public static function beginsWith($input, $search, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
     {
@@ -309,11 +311,12 @@ class Str
      * Verifies if a string ends with a substring. The $encoding parameter is used to determine the input string
      * encoding and thus use the proper method.
      *
-     * @param   string  $input      The input string to compare to
-     * @param   string  $search     The substring to compare the ending to
-     * @param   string  $case_sensitive     Whether the comparison is case-sensitive
-     * @param   string  $encoding   The encoding of the input string
+     * @param   string  $input              The input string to compare to
+     * @param   string  $search             The substring to compare the ending to
+     * @param   bool    $case_sensitive     Whether the comparison is case-sensitive
+     * @param   string  $encoding           The encoding of the input string
      * @return  bool    Whether the input string ends with the given substring
+     * @throws  \InvalidArgumentException
      */
     public static function endsWith($input, $search, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
     {
@@ -321,11 +324,11 @@ class Str
             throw new InvalidArgumentException("Both parameters \$input and \$search must be strings.");
         }
 
-        if (($length = static::length($search)) == 0) {
+        if (($length = static::length($search, $encoding)) == 0) {
             return true;
         }
 
-        $substr = static::sub($input, -$length);
+        $substr = static::sub($input, -$length, $encoding);
 
         return !(($case_sensitive)? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
@@ -343,6 +346,7 @@ class Str
      * @param   bool        $return_index       Whether to return the matched array's item instead
      * @param   bool        $case_sensitive     Whether the comparison is case-sensitive
      * @return  bool|int    Whether the input string was found in the array or the item's index if found
+     * @throws  \InvalidArgumentException
      */
     public static function isOneOf($input, array $values, $return_index = false, $case_sensitive = true)
     {
@@ -380,6 +384,7 @@ class Str
      * @param   array   $separators     An array containing separators to split the input string
      * @param   string  $encoding       The encoding of the input string
      * @return  string  The studly-caps-cased string
+     * @throws  \InvalidArgumentException
      */
     public static function studly($input, array $separators = array('_'), $encoding = self::DEFAULT_ENCODING)
     {
@@ -414,6 +419,7 @@ class Str
      * @param   array   $separators     An array containing separators to split the input string
      * @param   string  $encoding       The encoding of the input string
      * @return  string  The camel-cased string
+     * @throws  \InvalidArgumentException
      */
     public static function camel($input, array $separators = array('_'), $encoding = self::DEFAULT_ENCODING)
     {
@@ -437,7 +443,9 @@ class Str
      * @param   string          $input      The input string
      * @param   string          $separator  The separator to be used
      * @param   null|string     $transform  The transformation to be run for each word
+     * @param   string          $encoding   The encoding of the input string
      * @return  string  The char(s)-separated string
+     * @throws  \InvalidArgumentException
      */
     public static function separated($input, $separator = '_', $transform = null, $encoding = self::DEFAULT_ENCODING)
     {
