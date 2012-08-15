@@ -238,6 +238,35 @@ class Arr implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Replaces key names in an array by names in $replace
+     *
+     *  @author  FuelPHP (http://fuelphp.com)
+     * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
+     * @param   array|string  $replace  key to replace or array containing the replacement keys
+     * @param   string        $newKey   the replacement key
+     * @return  Arr
+     * @throws  \InvalidArgumentException
+     */
+    public function replaceKey($replace, $newKey = null)
+    {
+        is_string($replace) and $replace = array($replace => $newKey);
+        if (!is_array($replace)){
+            throw new InvalidArgumentException('First parameter must be an array or string.');
+        }
+
+        foreach ($this->_data as $key => &$value){
+            if (array_key_exists($key, $replace)){
+                $this->_data[$replace[$key]] = $value;
+                unset($this->_data[$key]);
+            } else {
+                $this->_data[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Unsets an item with a dot-notated key from an array.
      *
      * @author  FuelPHP (http://fuelphp.com)
@@ -307,35 +336,6 @@ class Arr implements ArrayAccess, Iterator, Countable
         }
 
         return false;
-    }
-
-    /**
-     * Replaces key names in an array by names in $replace
-     *
-     *  @author  FuelPHP (http://fuelphp.com)
-     * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
-     * @param   array|string  $replace  key to replace or array containing the replacement keys
-     * @param   string        $newKey   the replacement key
-     * @return  Arr
-     * @throws  \InvalidArgumentException
-     */
-    public function replace_key($replace, $newKey = null)
-    {
-        is_string($replace) and $replace = array($replace => $newKey);
-        if (!is_array($replace)){
-            throw new InvalidArgumentException('First parameter must be an array or string.');
-        }
-
-        foreach ($this->_data as $key => &$value){
-            if (array_key_exists($key, $replace)){
-                $this->_data[$replace[$key]] = $value;
-                unset($this->_data[$key]);
-            } else {
-                $this->_data[$key] = $value;
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -494,6 +494,19 @@ class Arr implements ArrayAccess, Iterator, Countable
         };
 
         return $flatten($this->_data, $currKey, $return, $glue, $indexed, $flatten);
+    }
+
+    /**
+     * Flattens a multi-dimensional associative array down into a 1 dimensional associative array.
+     *
+     * @author  FuelPHP (http://fuelphp.com)
+     * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
+     * @param   string  $glue   what to glue the keys together with
+     * @return  array
+     */
+    public function flattenAssoc($glue = '.')
+    {
+        return $this->flatten($glue, false);
     }
 
     /**
