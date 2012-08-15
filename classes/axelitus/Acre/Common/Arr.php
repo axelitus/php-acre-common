@@ -31,7 +31,6 @@ use Iterator;
  * @category    Common
  * @author      Axel Pardemann (dev@axelitus.mx)
  */
-/** @noinspection PhpDocMissingReturnTagInspection */
 class Arr implements ArrayAccess, Iterator, Countable
 {
     /**
@@ -518,7 +517,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      *
      * @author  FuelPHP (http://fuelphp.com)
      * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
-     * @param   array  $array*  multiple variables all of which must be arrays
+     * @param   array  $array  multiple variables all of which must be arrays
      * @return  Arr
      * @throws  \InvalidArgumentException
      */
