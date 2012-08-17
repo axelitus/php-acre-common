@@ -210,13 +210,13 @@ class Str
      * The length of the returned string can be controlled with the $length parameter, but every characters is
      * randomized independently with each loop.
      *
+     * @param   int     $length     The length of the output string
      * @param   string  $chars      The pool of characters to randomize from
      * @param   bool    $shuffle    Whether to shuffle the character string to increase randomness (entropy)
-     * @param   int     $length     The length of the output string
      * @return  string  The random string containing random characters from the $chars string
      * @throws  \InvalidArgumentException
      */
-    public static function random($chars, $shuffle = false, $length = 1)
+    public static function random($length = 1, $chars = self::ALNUM, $shuffle = false)
     {
         if (!is_string($chars) or $chars == '') {
             throw new InvalidArgumentException("The \$chars parameter must be a non-empty string containing a set of characters to pick a random value from.");
@@ -246,11 +246,11 @@ class Str
      * This function is based on FuelPHP's \Fuel\Core\Str random function.
      *
      * @param   string  $type       The type of random string to get
-     * @param   bool    $shuffle    Whether to shuffle the character pool to increase randomness (entropy)
      * @param   int     $length     The length of the output string
+     * @param   bool    $shuffle    Whether to shuffle the character pool to increase randomness (entropy)
      * @return  string  The type-random string containing random characters from the proper type pool
      */
-    public static function trandom($type = 'alnum', $shuffle = false, $length = 16)
+    public static function trandom($type = 'alnum', $length = 16, $shuffle = false)
     {
         switch ($type) {
             case 'basic':
@@ -285,7 +285,7 @@ class Str
                 break;             
         }
 
-        return static::random($pool, $shuffle, $length);
+        return static::random($length, $pool, $shuffle);
     }
 
     /**
@@ -350,12 +350,12 @@ class Str
      *
      * @param   string      $input              The input string
      * @param   array       $values             The strings array to look for the input string
-     * @param   bool        $return_index       Whether to return the matched array's item instead
      * @param   bool        $case_sensitive     Whether the comparison is case-sensitive
+     * @param   bool        $return_index       Whether to return the matched array's item instead
      * @return  bool|int    Whether the input string was found in the array or the item's index if found
      * @throws  \InvalidArgumentException
      */
-    public static function isOneOf($input, array $values, $return_index = false, $case_sensitive = true)
+    public static function isOneOf($input, array $values, $case_sensitive = true, $return_index = false)
     {
         if (!is_string($input)) {
             throw new InvalidArgumentException("The \$input parameter must be a string.");
@@ -399,17 +399,18 @@ class Str
             throw new InvalidArgumentException("The \$input parameter must be a string.");
         }
 
-        $studly = $input;
         if (!empty($separators)) {
+            $pattern = '';
             foreach ($separators as $separator) {
                 if (!is_string($separator)) {
                     throw new InvalidArgumentException("The \$separators array must contain only strings.");
                 }
-            }
 
-            $studly = str_replace($separators, ' ', $studly);
-            $studly = static::ucwords($studly, $encoding);
-            $studly = str_replace(' ', '', $studly);
+                $pattern .= '|' . $separator;
+            }
+            $pattern = '/(^'.preg_quote($pattern).')(.)/e';
+
+            $studly = preg_replace($pattern, "strtoupper('\\2')", strval($input));
         }
 
         return $studly;
@@ -448,13 +449,13 @@ class Str
      * and no transformation will be made thus returning the separated words unmodified).
      *
      * @param   string          $input      The input string
-     * @param   string          $separator  The separator to be used
      * @param   null|string     $transform  The transformation to be run for each word
+     * @param   string          $separator  The separator to be used
      * @param   string          $encoding   The encoding of the input string
      * @return  string  The char(s)-separated string
      * @throws  \InvalidArgumentException
      */
-    public static function separated($input, $separator = '_', $transform = null, $encoding = self::DEFAULT_ENCODING)
+    public static function separated($input, $transform = null, $separator = '_', $encoding = self::DEFAULT_ENCODING)
     {
         if (!is_string($input) and !is_string($separator)) {
             throw new InvalidArgumentException("The \$input and \$separator parameters must be both strings.");
@@ -482,8 +483,11 @@ class Str
         } else {
             $separated = preg_replace('/(?<=\\w)(?=[A-Z])/', $separator.'$1', $input);
 
+            // TODO: don't know if this works for every multiple word
             if($transform == 'ucfirst') {
                 $separated = static::ucfirst($separated, $encoding);
+            } elseif ($transform == 'lcfirst') {
+                $separated = static::lcfirst($separated, $encoding);
             }
         }
         
