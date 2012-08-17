@@ -51,6 +51,13 @@ class Str
     const DISTINCT = '2345679ACDEFHJKLMNPRSTUVWXYZ';
 
     /**
+     * @var string  A string containing ascii printable characters according to Wikipedia:
+     * http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+     * Be careful, the ' char is escaped so it looks like \ is twice, but it is not.
+     */
+    const ASCII_PRINTABLE = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+
+    /**
      * @var string  The default encoding to use with some functions.
      */
     const DEFAULT_ENCODING = 'UTF-8';
