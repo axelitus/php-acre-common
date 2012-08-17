@@ -104,7 +104,7 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($output);
 
         $output = Str::beginsWith("Hello World", "hell", false);
-        $this->assertFalse($output);
+        $this->assertTrue($output);
     }
 
     /**
@@ -121,7 +121,7 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($output);
 
         $output = Str::endsWith("Hello World", "Orld", false);
-        $this->assertFalse($output);
+        $this->assertTrue($output);
     }
 
     /**
@@ -132,6 +132,10 @@ class StrTest extends \PHPUnit_Framework_TestCase
     public function testIsOneOf()
     {
         $animals = array('Monkey', 'Mouse', 'favorite' => 'Dog', 'Cat', 'Penguin');
+
+        $animal = null;
+        $output = Str::isOneOf($animal, $animals);
+        $this->assertFalse($output);
 
         $animal = 'Penguin';
         $output = Str::isOneOf($animal, $animals);
@@ -147,7 +151,7 @@ class StrTest extends \PHPUnit_Framework_TestCase
 
         $animal = 'Cat';
         $output = Str::isOneOf($animal, $animals, true, true);
-        $expected = 3;
+        $expected = 2;
         $this->assertEquals($expected, $output);
 
         $animal = 'Dog';
@@ -166,6 +170,14 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $output = Str::studly('This_is_an_underscore Separated_string_With_spaces');
         $expected = 'ThisIsAnUnderscore SeparatedStringWithSpaces';
         $this->assertEquals($expected, $output);
+
+        $output = Str::studly('this_is_an_underscore separated_string_with_spaces');
+        $expected = 'ThisIsAnUnderscore SeparatedStringWithSpaces';
+        $this->assertEquals($expected, $output);
+
+        $output = Str::studly('This string should be converted to a single word studlyCaps string', array(' '));
+        $expected = 'ThisStringShouldBeConvertedToASingleWordStudlyCapsString';
+        $this->assertEquals($expected, $output);
     }
 
     /**
@@ -175,8 +187,16 @@ class StrTest extends \PHPUnit_Framework_TestCase
      */
     public function testCamel()
     {
-        $output = Str::studly('This_is_an_underscore Separated_string_With_spaces');
+        $output = Str::camel('This_is_an_underscore Separated_string_With_spaces');
         $expected = 'thisIsAnUnderscore separatedStringWithSpaces';
+        $this->assertEquals($expected, $output);
+
+        $output = Str::camel('this_is_an_underscore separated_string_with_spaces');
+        $expected = 'thisIsAnUnderscore separatedStringWithSpaces';
+        $this->assertEquals($expected, $output);
+
+        $output = Str::camel('This string should be converted to a single word studlyCaps string', array(' '));
+        $expected = 'thisStringShouldBeConvertedToASingleWordStudlyCapsString';
         $this->assertEquals($expected, $output);
     }
 
@@ -195,16 +215,20 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $expected = 'this_is_a_studly_caps_string separated_with_spaces';
         $this->assertEquals($expected, $output);
 
-        $output = Str::separated('ThisIsAStudlyCapsString SeparatedWithSpaces', 'lower');
+        $output = Str::separated('ThisIsAStudlyCapsString SeparatedWithSpaces', 'upper');
         $expected = 'THIS_IS_A_STUDLY_CAPS_STRING SEPARATED_WITH_SPACES';
         $this->assertEquals($expected, $output);
 
-        $output = Str::separated('ThisIsAStudlyCapsString SeparatedWithSpaces', 'ucfirst');
-        $expected = 'This_is_a_studly_caps_string Separated_with_spaces';
+        $output = Str::separated('thisIsAStudlyCapsString SeparatedWithSpaces', 'lcfirst');
+        $expected = 'this_Is_A_Studly_Caps_String separated_With_Spaces';
         $this->assertEquals($expected, $output);
 
-        $output = Str::separated('ThisIsAStudlyCapsString SeparatedWithSpaces', 'lcfirst');
-        $expected = 'this_Is_A_Studly_Caps_String separated_With_Spaces';
+        $output = Str::separated('thisIsAStudlyCapsString separatedWithSpaces', 'ucfirst');
+        $expected = 'This_Is_A_Studly_Caps_String Separated_With_Spaces';
+        $this->assertEquals($expected, $output);
+
+        $output = Str::separated('thisIsAStudlyCapsString separatedWithSpaces', 'ucwords');
+        $expected = 'This_is_a_studly_caps_string Separated_with_spaces';
         $this->assertEquals($expected, $output);
     }
 }
