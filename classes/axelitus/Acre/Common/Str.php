@@ -335,7 +335,7 @@ class Str
             return true;
         }
 
-        $substr = static::sub($input, -$length, $encoding);
+        $substr = static::sub($input, -$length, $length, $encoding);
 
         return !(($case_sensitive)? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
@@ -357,6 +357,10 @@ class Str
      */
     public static function isOneOf($input, array $values, $case_sensitive = true, $return_index = false)
     {
+        if($input == null) {
+            return false;
+        }
+
         if (!is_string($input)) {
             throw new InvalidArgumentException("The \$input parameter must be a string.");
         }
@@ -384,8 +388,10 @@ class Str
      * Converts a char(s)-separated string into studly caps.
      *
      * Converts a char(s)-separated string into studly caps. The string can be split using one or more
-     * separators (being them a single char or a string). The $encoding parameter is used to determine
-     * the input string encoding and thus use the proper method.
+     * separators (being them a single char or a string). The $encoding parameter is used to determine the
+     * input string encoding and thus use the proper method.
+     * When the space char is not used as a separator, each word is converted to studly caps on its own,
+     * otherwise the result will be a single studly-caps-cased string.
      *
      * @param   string  $input          The input string
      * @param   array   $separators     An array containing separators to split the input string
@@ -406,11 +412,16 @@ class Str
                     throw new InvalidArgumentException("The \$separators array must contain only strings.");
                 }
 
-                $pattern .= '|' . $separator;
+                $pattern .= '|' . preg_quote($separator);
             }
-            $pattern = '/(^'.preg_quote($pattern).')(.)/e';
+            $pattern = '/(^'.$pattern.')(.)/e';
 
             $studly = preg_replace($pattern, "strtoupper('\\2')", strval($input));
+            $words = explode(' ', $studly);
+            foreach($words as &$word) {
+                $word = Str::ucfirst($word, $encoding);
+            }
+            $studly = implode(' ', $words);
         }
 
         return $studly;
@@ -422,6 +433,8 @@ class Str
      * Converts a char(s)-separated string into camel case. The string can be split using one or more
      * separators (being them a single char or a string). The $encoding parameter is used to determine
      * the input string encoding and thus use the proper method.
+     * When the space char is not used as a separator, each word is converted to camel case on its own,
+     * otherwise the result will be a single camel-cased string.
      *
      * @param   string  $input          The input string
      * @param   array   $separators     An array containing separators to split the input string
@@ -435,7 +448,12 @@ class Str
             throw new InvalidArgumentException("The \$input parameter must be a string.");
         }
 
-        $camel = static::lcfirst(static::studly($input, $separators, $encoding), $encoding);
+        $camel = static::studly($input, $separators, $encoding);
+        $words = explode(' ', $camel);
+        foreach ($words as &$word) {
+            $word = Str::lcfirst($word, $encoding);
+        }
+        $camel = implode(' ', $words);
 
         return $camel;
     }
@@ -444,9 +462,9 @@ class Str
      * Converts a studly-caps-cased or camel-cased string into a char(s)-separated string using a given separator.
      *
      * Converts a studly-caps-cased or camel-cased string into a char(s)-separated string using a given separator.
-     * Additionally it can run one of the following transformation in every separated word before attaching the
-     * separator: 'lower', 'upper' or 'ucfirst' by using the $transform parameter (other values will be ignored
-     * and no transformation will be made thus returning the separated words unmodified).
+     * Additionally it can run one of the following transformation in every separated word (words are split by a
+     * space): 'lower', 'upper', 'lcfirst', 'ucfirst', 'ucwords' by using the $transform parameter (other values will
+     * be ignored and no transformation will be made thus returning the separated words unmodified).
      *
      * @param   string          $input      The input string
      * @param   null|string     $transform  The transformation to be run for each word
@@ -465,32 +483,47 @@ class Str
             throw new InvalidArgumentException("The \$separator parameters must have at least one character.");
         }
 
-        if ($transform == 'lower' or $transform == 'upper') {
-            $separated = preg_replace_callback('/(^.+?)(?=[A-Z]|$)|(?<=\\w).+?(?=[A-Z]|$)/', 
-                function($matches) use ($separator, $transform, $encoding) {
-                    $transformed = $matches[0];
-                    switch ($transform) {
-                        case 'lower':
-                            $transformed = Str::lower($transformed, $encoding);
-                            break;
-                        case 'upper':
-                            $transformed = Str::upper($transformed, $encoding);
-                            break;
-                    }
+        $separated = preg_replace_callback('/(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
+            function($matches) use ($separator, $transform, $encoding) {
+                $transformed = trim($matches[0]);
+                $count_matches = count($matches);
 
-                    return ((count($matches) == 1)? $separator : '').$transformed;
-                }, $input);
-        } else {
-            $separated = preg_replace('/(?<=\\w)(?=[A-Z])/', $separator.'$1', $input);
+                switch ($transform) {
+                    case 'lower':
+                        $transformed = Str::lower($transformed, $encoding);
+                        break;
+                    case 'upper':
+                        $transformed = Str::upper($transformed, $encoding);
+                        break;
+                }
 
-            // TODO: don't know if this works for every multiple word
-            if($transform == 'ucfirst') {
-                $separated = static::ucfirst($separated, $encoding);
-            } elseif ($transform == 'lcfirst') {
-                $separated = static::lcfirst($separated, $encoding);
+                $transformed = (($count_matches == 4)? $matches[2] : '').$transformed;
+                $transformed = (($count_matches == 5)? $separator : '').$transformed;
+
+                return $transformed;
+            }, $input);
+
+        // Do lcfirst and ucfirst transformations
+        if (Str::isOneOf($transform, array('lcfirst', 'ucfirst', 'ucwords'))) {
+            $words = explode(' ', $separated);
+            foreach ($words as &$word) {
+                switch($transform) {
+                    case 'lcfirst':
+                        $word = Str::lcfirst($word, $encoding);
+                        break;
+                    case 'ucfirst':
+                        $word = Str::ucfirst($word, $encoding);
+                        break;
+                    case 'ucwords':
+                        // Because of how mb_convert_case works with MB_CASE_TITLE (underscore delimits words) we
+                        // need to simulate it by lower + ucfirst
+                        $word = Str::ucfirst(Str::lower($word, $encoding), $encoding);
+                        break;
+                }
             }
+            $separated = implode(' ', $words);
         }
-        
+
         return $separated;
     }
 
