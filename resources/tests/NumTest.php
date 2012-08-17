@@ -11,6 +11,8 @@ class NumTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests the Num::isInt function
+     * 
+     * @test
      */
     public function testIsInt()
     {
@@ -37,6 +39,8 @@ class NumTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests the Num::between function
+     *
+     * @test
      */
     public function testBetween()
     {

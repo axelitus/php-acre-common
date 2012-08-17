@@ -1,14 +1,14 @@
 <?php
-    /**
-     * Part of the axelitus\Acre\Common Package.
-     *
-     * @package     axelitus\Acre\Common
-     * @version     0.1
-     * @author      Axel Pardemann (dev@axelitus.mx)
-     * @license     MIT License
-     * @copyright   2012 - Axel Pardemann
-     * @link        http://axelitus.mx/
-     */
+/**
+ * Part of the axelitus\Acre\Common Package.
+ *
+ * @package     axelitus\Acre\Common
+ * @version     0.1
+ * @author      Axel Pardemann (dev@axelitus.mx)
+ * @license     MIT License
+ * @copyright   2012 - Axel Pardemann
+ * @link        http://axelitus.mx/
+ */
 
 namespace axelitus\Acre\Common;
 
