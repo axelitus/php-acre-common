@@ -73,7 +73,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public static function dotGet($key, &$input, &$return)
     {
-        if (!is_array($input) and ! $input instanceof ArrayAccess) {
+        if (!is_array($input) and !$input instanceof ArrayAccess) {
             throw new InvalidArgumentException('The second argument of array_get_dot_key() must be an array or ArrayAccess object.');
         }
 
@@ -81,10 +81,9 @@ class Arr implements ArrayAccess, Iterator, Countable
         $keys = explode('.', $key);
         while (count($keys) > 0) {
             $key = array_shift($keys);
-            if (!isset($input[$key])
-                or (!empty($keys) and !is_array($input[$key]) and !$input[$key] instanceof ArrayAccess)) {
-                    // Item not found, return failure
-                    return false;
+            if (!isset($input[$key]) or (!empty($keys) and !is_array($input[$key])and !$input[$key] instanceof ArrayAccess)) {
+                // Item not found, return failure
+                return false;
             }
             $input =& $input[$key];
         }
@@ -118,14 +117,15 @@ class Arr implements ArrayAccess, Iterator, Countable
         while (count($keys) > 1) {
             $key = array_shift($keys);
             if (!isset($input[$key])
-                or (!empty($keys) and !is_array($input[$key]) and !$input[$key] instanceof ArrayAccess)) {
-                    if ($unsetOnNull and is_null($setting)) {
-                        // Item not found, impossible to unset, return failure
-                        return false;
-                    }
+                or (!empty($keys) and !is_array($input[$key]) and !$input[$key] instanceof ArrayAccess)
+            ) {
+                if ($unsetOnNull and is_null($setting)) {
+                    // Item not found, impossible to unset, return failure
+                    return false;
+                }
 
-                    // Create new sub-array or overwrite non array
-                    $input[$key] = array();
+                // Create new sub-array or overwrite non array
+                $input[$key] = array();
             }
             $input =& $input[$key];
         }
@@ -155,11 +155,11 @@ class Arr implements ArrayAccess, Iterator, Countable
      * @param   mixed     $val    The value to test as a Closure and execute it.
      * @return  mixed    The actual or computed value
      */
-    public static function getItemValue($val) {
+    public static function getItemValue($val)
+    {
         if ($val instanceof Closure) {
             $refl = new ReflectionFunction($val);
-            if ($refl->getNumberOfParameters() === 0)
-            {
+            if ($refl->getNumberOfParameters() === 0) {
                 return call_user_func($val);
             }
         }
@@ -190,7 +190,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             return $return;
         }
 
-        if (!static::dotGet($key, $this->_data, $return)){
+        if (!static::dotGet($key, $this->_data, $return)) {
             return static::getItemValue($default);
         }
 
@@ -239,7 +239,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     /**
      * Replaces key names in an array by names in $replace
      *
-     *  @author  FuelPHP (http://fuelphp.com)
+     * @author  FuelPHP (http://fuelphp.com)
      * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
      * @param   array|string  $replace  key to replace or array containing the replacement keys
      * @param   string        $newKey   the replacement key
@@ -249,12 +249,12 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function replaceKey($replace, $newKey = null)
     {
         is_string($replace) and $replace = array($replace => $newKey);
-        if (!is_array($replace)){
+        if (!is_array($replace)) {
             throw new InvalidArgumentException('First parameter must be an array or string.');
         }
 
-        foreach ($this->_data as $key => &$value){
-            if (array_key_exists($key, $replace)){
+        foreach ($this->_data as $key => &$value) {
+            if (array_key_exists($key, $replace)) {
                 $this->_data[$replace[$key]] = $value;
                 unset($this->_data[$key]);
             } else {
@@ -281,7 +281,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 
         if (is_array($key)) {
             $return = array();
-            foreach ($key as $k){
+            foreach ($key as $k) {
                 $return[$k] = $this->delete($k);
             }
             return $return;
@@ -329,7 +329,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function isAssoc()
     {
         foreach ($this->_data as $key => $unused) {
-            if (!is_int($key)){
+            if (!is_int($key)) {
                 return true;
             }
         }
@@ -352,7 +352,7 @@ class Arr implements ArrayAccess, Iterator, Countable
         foreach ($this->_data as $key => &$val) {
             if (preg_match('/^'.$prefix.'/', $key)) {
                 if ($removePrefix === true) {
-                    $key = preg_replace('/^'.$prefix.'/','',$key);
+                    $key = preg_replace('/^'.$prefix.'/', '', $key);
                 }
                 $return[$key] = $val;
             }
@@ -391,7 +391,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      * @author  FuelPHP (http://fuelphp.com)
      * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
      * @param   array|mixed  $value  the value(s) to insert, arrays needs to be inside an array themselves
-     * @param   int          $pos    the numeric position at which to insert, negative to count from the end backwards
+     * @param   int          $pos    the numeric position at which to insert, negative to count from the end backward
      * @return  Arr
      * @throws  \OutOfBoundsException
      */
@@ -478,12 +478,14 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         $return = array();
         $currKey = array();
-        $flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self){
+        $flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self)
+        {
             foreach ($array as $key => &$val) {
                 $curr_key[] = $key;
                 if ((is_array($val) or $val instanceof Iterator)
-                    and ($indexed or array_values($val) !== $val)) {
-                        $self($val, $currKey, $return, $glue, false);
+                    and ($indexed or array_values($val) !== $val)
+                ) {
+                    $self($val, $currKey, $return, $glue, false);
                 } else {
                     $return[implode($glue, $currKey)] = $val;
                 }
@@ -527,11 +529,12 @@ class Arr implements ArrayAccess, Iterator, Countable
         {
             foreach ($array2 as $k => &$v) {
                 // numeric keys are appended
-                if (is_int($k))  {
+                if (is_int($k)) {
                     array_key_exists($k, $array1) ? array_push($array1, $v) : $array1[$k] = $v;
                 } elseif (is_array($v) and array_key_exists($k, $array1) and is_array($array1[$k])) {
                     $array1[$k] = $self($array1[$k], $v);
-                } else {
+                }
+                else {
                     $array1[$k] = $v;
                 }
             }
@@ -562,7 +565,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function prepend($key, $value = null)
     {
-        $this->_data = (is_array($key)? $key : array($key => $value)) + $this->_data;
+        $this->_data = (is_array($key) ? $key : array($key => $value)) + $this->_data;
         return $this;
     }
 
@@ -688,6 +691,6 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function valid()
     {
-        return ! is_null(key($this->_data));
+        return !is_null(key($this->_data));
     }
 }

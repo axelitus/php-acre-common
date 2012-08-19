@@ -11,7 +11,7 @@ class NumTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests the Num::isInt function
-     * 
+     *
      * @test
      */
     public function testIsInt()
@@ -50,7 +50,7 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_low = 3;
         $num_high = 12;
         $value = 5;
-        
+
         $output = Num::between($value, $num_low, $num_high, false, false);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
@@ -58,11 +58,11 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $output = Num::between($value, $num_low, $num_high, false, true);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, false);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, true);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
@@ -81,11 +81,11 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $output = Num::between($value, $num_low, $num_high, false, true);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, false);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, true);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
@@ -96,7 +96,7 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_low = "7";
         $num_high = 12;
         $value = 12;
-        
+
         $output = Num::between($value, $num_low, $num_high, false, false);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
@@ -104,11 +104,11 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $output = Num::between($value, $num_low, $num_high, false, true);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, false);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, true);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
@@ -127,11 +127,11 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $output = Num::between($value, $num_low, $num_high, false, true);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, false);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, true);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
@@ -150,11 +150,11 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $output = Num::between($value, $num_low, $num_high, false, true);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, false);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
-        
+
         $output = Num::between($value, $num_low, $num_high, true, true);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);

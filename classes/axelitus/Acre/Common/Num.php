@@ -63,12 +63,12 @@ class Num
         }
 
         $low_limit = min($low, $high);
-        if (!($low_test = ($low_closed)? $low_limit <= $val : $low_limit < $val)) {
+        if (!($low_test = ($low_closed) ? $low_limit <= $val : $low_limit < $val)) {
             return false;
         }
 
         $high_limit = max($low, $high);
-        if(!($high_test = ($high_closed)? $high_limit >= $val : $high_limit > $val)) {
+        if (!($high_test = ($high_closed) ? $high_limit >= $val : $high_limit > $val)) {
             return false;
         }
 

@@ -226,7 +226,7 @@ class Str
             throw new InvalidArgumentException("The \$length parameter must be a positive integer or zero.");
         }
 
-        $chars = ($shuffle)? str_shuffle($chars) : $chars;
+        $chars = ($shuffle) ? str_shuffle($chars) : $chars;
 
         $string = '';
         for ($i = 0; $i < $length; $i++) {
@@ -282,7 +282,7 @@ class Str
                 break;
             default:
                 $pool = self::ALNUM;
-                break;             
+                break;
         }
 
         return static::random($length, $pool, $shuffle);
@@ -309,7 +309,7 @@ class Str
 
         $substr = static::sub($input, 0, static::length($search), $encoding);
 
-        return !(($case_sensitive)? strcmp($substr, $search) : strcasecmp($substr, $search));
+        return !(($case_sensitive) ? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
 
     /**
@@ -337,7 +337,7 @@ class Str
 
         $substr = static::sub($input, -$length, $length, $encoding);
 
-        return !(($case_sensitive)? strcmp($substr, $search) : strcasecmp($substr, $search));
+        return !(($case_sensitive) ? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
 
     /**
@@ -357,7 +357,7 @@ class Str
      */
     public static function isOneOf($input, array $values, $case_sensitive = true, $return_index = false)
     {
-        if($input == null) {
+        if ($input == null) {
             return false;
         }
 
@@ -372,11 +372,11 @@ class Str
 
             if ($case_sensitive) {
                 if (strcmp($input, $str) == 0) {
-                    return ($return_index)? $index : true;
+                    return ($return_index) ? $index : true;
                 }
             } else {
                 if (strcasecmp($input, $str) == 0) {
-                    return ($return_index)? $index : true;
+                    return ($return_index) ? $index : true;
                 }
             }
         }
@@ -412,13 +412,13 @@ class Str
                     throw new InvalidArgumentException("The \$separators array must contain only strings.");
                 }
 
-                $pattern .= '|' . preg_quote($separator);
+                $pattern .= '|'.preg_quote($separator);
             }
             $pattern = '/(^'.$pattern.')(.)/e';
 
             $studly = preg_replace($pattern, "strtoupper('\\2')", strval($input));
             $words = explode(' ', $studly);
-            foreach($words as &$word) {
+            foreach ($words as &$word) {
                 $word = Str::ucfirst($word, $encoding);
             }
             $studly = implode(' ', $words);
@@ -484,7 +484,8 @@ class Str
         }
 
         $separated = preg_replace_callback('/(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
-            function($matches) use ($separator, $transform, $encoding) {
+            function($matches) use ($separator, $transform, $encoding)
+            {
                 $transformed = trim($matches[0]);
                 $count_matches = count($matches);
 
@@ -497,8 +498,8 @@ class Str
                         break;
                 }
 
-                $transformed = (($count_matches == 4)? $matches[2] : '').$transformed;
-                $transformed = (($count_matches == 5)? $separator : '').$transformed;
+                $transformed = (($count_matches == 4) ? $matches[2] : '').$transformed;
+                $transformed = (($count_matches == 5) ? $separator : '').$transformed;
 
                 return $transformed;
             }, $input);
@@ -507,7 +508,7 @@ class Str
         if (Str::isOneOf($transform, array('lcfirst', 'ucfirst', 'ucwords'))) {
             $words = explode(' ', $separated);
             foreach ($words as &$word) {
-                switch($transform) {
+                switch ($transform) {
                     case 'lcfirst':
                         $word = Str::lcfirst($word, $encoding);
                         break;
@@ -533,6 +534,7 @@ class Str
      * Truncates a string to the given length. It will optionally preserve HTML tags if $is_html is set to true.
      *
      * @author  FuelPHP (http://fuelphp.com)
+     *
      * @param   string  $string        The string to truncate
      * @param   int     $limit         The number of characters to truncate too
      * @param   string  $continuation  The string to use to denote it was truncated
@@ -571,9 +573,9 @@ class Str
             }
         }
 
-        $new_string = static::sub($string, 0, $limit = min(static::length($string),  $limit + $offset));
+        $new_string = static::sub($string, 0, $limit = min(static::length($string), $limit + $offset));
         $new_string .= (static::length($string) > $limit ? $continuation : '');
-        $new_string .= count($tags = array_reverse($tags)) ? '</'.implode('></',$tags).'>' : '';
+        $new_string .= count($tags = array_reverse($tags)) ? '</'.implode('></', $tags).'>' : '';
 
         return $new_string;
     }
