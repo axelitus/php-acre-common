@@ -1,8 +1,8 @@
 {
     "name": "axelitus/acre-common",
     "description": "axelitus's Acre common classes.",
-    "type": "library",    
-    "keywords": ["common","basic","primitives", "string", "number"],
+    "type": "library",
+    "keywords": ["common", "basic", "primitives", "string", "number"],
     "homepage": "http://axelitus.mx/acre",
     "license": "MIT",
     "authors": [
@@ -18,6 +18,8 @@
         "php": ">=5.3.0"
     },
     "autoload": {
-        "psr-0": { "axelitus\\Acre\\Common": "classes/" }
+        "psr-0": {
+            "axelitus\\Acre\\Common": "classes/"
+        }
     }
 }
