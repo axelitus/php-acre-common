@@ -28,7 +28,7 @@ abstract class Singleton
 
     /**
      * @static
-     * @var mixed   The singleton instance when forged
+     * @var mixed   The singleton instance
      **/
     protected static $_instance = null;
 
