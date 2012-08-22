@@ -27,6 +27,7 @@ abstract class Singleton
     const INIT_METHOD = 'init';
 
     /**
+     * @static
      * @var mixed   The singleton instance when forged
      **/
     protected static $_instance = null;
@@ -44,6 +45,7 @@ abstract class Singleton
      * Forges a new instance of the singleton. If an instance already exists it will be returned. Alias to Singleton::instance().
      * The parameters are passed along to the init method if present to autoinitialize (configure) the singleton.
      *
+     * @static
      * @param mixed     $params     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
@@ -58,6 +60,7 @@ abstract class Singleton
      * Forges a new instance of the singleton. If an instance already exists it will be removed and a new one will be created in it's place.
      * The parameters are passed along to the init method if present to autoinitialize (configure) the singleton.
      *
+     * @static
      * @param mixed     $params     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
@@ -73,6 +76,7 @@ abstract class Singleton
      * Forges a new instance of the singleton or returns the existing one. The parameters are passed along to the init method if present
      * to autoinitialize (configure) the singleton.
      *
+     * @static
      * @param mixed     $params     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
@@ -90,6 +94,8 @@ abstract class Singleton
 
     /**
      * Removes the singleton's instance.
+     *
+     * @static
      */
     public static function removeInstance()
     {
