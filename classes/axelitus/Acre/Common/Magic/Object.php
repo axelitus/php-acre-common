@@ -57,7 +57,7 @@ abstract class Magic_Object
     {
         if(property_exists($this, $property)) {
             $method = 'get'.Str::ucfirst($property);
-            if(method_exists($this, $method) and is_callable(array($this, $method)) {
+            if(method_exists($this, $method) and is_callable(array($this, $method))) {
                 return $this->{$method}();
             } else {
                 throw new RuntimeException("The property '{$property}' is not accesible.");
