@@ -13,6 +13,7 @@
 namespace axelitus\Acre\Common;
 
 use InvalidArgumentException;
+use RuntimeException;
 use axelitus\Acre\Common\Str as Str;
 
 /**
