@@ -230,5 +230,13 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $output = Str::separated('thisIsAStudlyCapsString separatedWithSpaces', 'ucwords');
         $expected = 'This_is_a_studly_caps_string Separated_with_spaces';
         $this->assertEquals($expected, $output);
+
+        $output = Str::separated('single', 'ucfirst');
+        $expected = 'Single';
+        $this->assertEquals($expected, $output);
+
+        $output = Str::separated('twoWords', 'ucfirst');
+        $expected = 'Two_Words';
+        $this->assertEquals($expected, $output);
     }
 }

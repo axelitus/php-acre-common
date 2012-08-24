@@ -483,7 +483,7 @@ class Str
             throw new InvalidArgumentException("The \$separator parameters must have at least one character.");
         }
 
-        $separated = preg_replace_callback('/(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
+        $separated = preg_replace_callback('/(^.[^A-Z]+$)|(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
             function($matches) use ($separator, $transform, $encoding)
             {
                 $transformed = trim($matches[0]);
@@ -498,8 +498,8 @@ class Str
                         break;
                 }
 
-                $transformed = (($count_matches == 4) ? $matches[2] : '').$transformed;
-                $transformed = (($count_matches == 5) ? $separator : '').$transformed;
+                $transformed = (($count_matches == 5) ? $matches[3] : '').$transformed;
+                $transformed = (($count_matches == 6) ? $separator : '').$transformed;
 
                 return $transformed;
             }, $input);
