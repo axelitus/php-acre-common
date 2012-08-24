@@ -35,9 +35,9 @@ abstract class Magic_Object
      **/
     public function __set($property, $value)
     {
-        if(property_exists($this, $property)) {
+        if (property_exists($this, $property) or property_exists($this, '_'.$property)) {
             $method = 'set'.Str::ucfirst($property);
-            if(method_exists($this, $method) and is_callable(array($this, $method))) {
+            if (method_exists($this, $method) and is_callable(array($this, $method))) {
                 return $this->{$method}($value);
             } else {
                 throw new RuntimeException("The property '{$property}' is not writeable.");
@@ -55,9 +55,9 @@ abstract class Magic_Object
      **/
     public function __get($property)
     {
-        if(property_exists($this, $property)) {
+        if (property_exists($this, $property) or property_exists($this, '_'.$property)) {
             $method = 'get'.Str::ucfirst($property);
-            if(method_exists($this, $method) and is_callable(array($this, $method))) {
+            if (method_exists($this, $method) and is_callable(array($this, $method))) {
                 return $this->{$method}();
             } else {
                 throw new RuntimeException("The property '{$property}' is not accesible.");
