@@ -357,7 +357,7 @@ class Str
      */
     public static function isOneOf($input, array $values, $case_sensitive = true, $return_index = false)
     {
-        if ($input == null) {
+        if ($input === null) {
             return false;
         }
 
