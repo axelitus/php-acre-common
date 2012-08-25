@@ -176,7 +176,7 @@ abstract class Magic_Object
             throw new RuntimeException("The method {$method} does not exist or is not callable.");
         }
 
-        return call_user_func_array($method, $args);
+        return call_user_func_array(array($this, $method), $args);
     }
 
     /**
