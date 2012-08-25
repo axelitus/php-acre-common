@@ -32,12 +32,12 @@ class Num
      * its variable type (as the is_int function does). Even a string containing an integer value will return true.
      *
      * @static
-     * @param   string  $val    The value to be tested
+     * @param   string  $value    The value to be tested
      * @return  bool    Whether the value is an integer regardless of its variable type
      */
-    public static function isInt($val)
+    public static function isInt($value)
     {
-        return (is_int($val) or ctype_digit(strval($val)));
+        return (is_int($value) or ctype_digit(strval($value)));
     }
 
     /**
@@ -48,7 +48,7 @@ class Num
      * $low_closed and $high_closed parameters (all possible variations: ]a,b[ -or- ]a,b] -or- [a,b[ -or- [a,b]).
      *
      * @static
-     * @param   int|float|double    $val            The number to be tested against the range
+     * @param   int|float|double    $value            The number to be tested against the range
      * @param   int|float|double    $low            The range's low limit
      * @param   int|float|double    $high           The range's high limit
      * @param   bool                $low_closed     Whether the low limit is closed (inclusive)
@@ -56,19 +56,19 @@ class Num
      * @return  bool    Whether the value is between the given range
      * @throws \InvalidArgumentException
      */
-    public static function between($val, $low, $high, $low_closed = true, $high_closed = true)
+    public static function between($value, $low, $high, $low_closed = true, $high_closed = true)
     {
-        if (!is_numeric($val) or !is_numeric($low) or !is_numeric($high)) {
-            throw new InvalidArgumentException("The \$val, \$low and \$high parameters must be numeric.");
+        if (!is_numeric($value) or !is_numeric($low) or !is_numeric($high)) {
+            throw new InvalidArgumentException("The \$value, \$low and \$high parameters must be numeric.");
         }
 
         $low_limit = min($low, $high);
-        if (!($low_test = ($low_closed) ? $low_limit <= $val : $low_limit < $val)) {
+        if (!($low_test = ($low_closed) ? $low_limit <= $value : $low_limit < $value)) {
             return false;
         }
 
         $high_limit = max($low, $high);
-        if (!($high_test = ($high_closed) ? $high_limit >= $val : $high_limit > $val)) {
+        if (!($high_test = ($high_closed) ? $high_limit >= $value : $high_limit > $value)) {
             return false;
         }
 

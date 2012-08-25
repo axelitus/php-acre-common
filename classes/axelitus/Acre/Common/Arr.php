@@ -152,19 +152,19 @@ class Arr implements ArrayAccess, Iterator, Countable
      * @author  FuelPHP (http://fuelphp.com)
      * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/kernel)
      * @static
-     * @param   mixed     $val    The value to test as a Closure and execute it.
+     * @param   mixed     $value    The value to test as a Closure and execute it.
      * @return  mixed    The actual or computed value
      */
-    public static function getItemValue($val)
+    public static function getItemValue($value)
     {
-        if ($val instanceof Closure) {
-            $refl = new ReflectionFunction($val);
+        if ($value instanceof Closure) {
+            $refl = new ReflectionFunction($value);
             if ($refl->getNumberOfParameters() === 0) {
-                return call_user_func($val);
+                return call_user_func($value);
             }
         }
 
-        return $val;
+        return $value;
     }
 
     /**
@@ -309,14 +309,14 @@ class Arr implements ArrayAccess, Iterator, Countable
         if (($count = count($this->_data)) % 2 > 0) {
             throw new RangeException('Number of variables must be even.');
         }
-        $keys = $vals = array();
+        $keys = $values = array();
 
         for ($i = 0; $i < $count - 1; $i += 2) {
             $keys[] = array_shift($arr);
-            $vals[] = array_shift($arr);
+            $values[] = array_shift($arr);
         }
 
-        return array_combine($keys, $vals);
+        return array_combine($keys, $values);
     }
 
     /**
@@ -349,12 +349,12 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function filterPrefixed($prefix = 'prefix_', $removePrefix = true)
     {
         $return = array();
-        foreach ($this->_data as $key => &$val) {
+        foreach ($this->_data as $key => &$value) {
             if (preg_match('/^'.$prefix.'/', $key)) {
                 if ($removePrefix === true) {
                     $key = preg_replace('/^'.$prefix.'/', '', $key);
                 }
-                $return[$key] = $val;
+                $return[$key] = $value;
             }
         }
 
@@ -480,14 +480,14 @@ class Arr implements ArrayAccess, Iterator, Countable
         $currKey = array();
         $flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self)
         {
-            foreach ($array as $key => &$val) {
+            foreach ($array as $key => &$value) {
                 $curr_key[] = $key;
-                if ((is_array($val) or $val instanceof Iterator)
-                    and ($indexed or array_values($val) !== $val)
+                if ((is_array($value) or $value instanceof Iterator)
+                    and ($indexed or array_values($value) !== $value)
                 ) {
-                    $self($val, $currKey, $return, $glue, false);
+                    $self($value, $currKey, $return, $glue, false);
                 } else {
-                    $return[implode($glue, $currKey)] = $val;
+                    $return[implode($glue, $currKey)] = $value;
                 }
 
                 array_pop($currKey);
