@@ -340,16 +340,20 @@ class Str
         return !(($case_sensitive) ? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
 
-    public static function contains($input, $search, $case_sensitive = true)
+    public static function contains($input, $search, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
     {
         if (!is_string($input) or !is_string($search)) {
             throw new InvalidArgumentException("Both parameters \$input and \$search must be strings.");
         }
 
         if ($case_sensitive) {
-            return (strpos($input, $search) !== false) ? true : false;
+            return function_exists('mb_strpos')
+                ? mb_strpos($input, $search, 0, $encoding)
+                : (strpos($input, $search) !== false ? true : false);
         } else {
-            return (stripos($input, $search) !== false) ? true : false;
+            return function_exists('mb_stripos')
+                ? mb_stripos($input, $search, 0, $encoding)
+                : (stripos($input, $search) !== false ? true : false);
         }
     }
 
