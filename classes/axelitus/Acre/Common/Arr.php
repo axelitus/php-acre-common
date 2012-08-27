@@ -569,6 +569,7 @@ class Arr implements ArrayAccess, Iterator, Countable
         return $this;
     }
 
+    //<editor-fold desc="Countable Interface">
     /**
      * Implements Countable interface
      *
@@ -580,7 +581,9 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         return count($this->_data);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="ArrayAccess Interface">
     /**
      * Implements ArrayAccess Interface
      *
@@ -633,7 +636,9 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         $this->delete($offset);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Iterator Interface">
     /**
      * Implements Iterator Interface
      *
@@ -691,6 +696,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function valid()
     {
-        return !is_null(key($this->_data));
+        return !is_null($this->key());
     }
+    //</editor-fold>
 }
