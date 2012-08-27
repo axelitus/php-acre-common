@@ -107,6 +107,91 @@ class Str
             : substr($input, $start, $length);
     }
 
+    public static function replace($input, $search, $replace, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
+    {
+        return function_exists('mb_strlen')
+            ? static::_mb_str_replace($search, $replace, $input, $case_sensitive, $encoding)
+            : (($case_sensitive) ? (strpos($input, $search) !== false ? true : false)
+                : (stripos($input, $search) !== false ? true : false));
+    }
+
+    /**
+     * @see     https://github.com/faceleg/php-mb_str_replace
+     * @static
+     * @param        $search
+     * @param        $replace
+     * @param        $subject
+     * @param bool   $case_sensitive
+     * @param string $encoding
+     * @param null   $count
+     * @return array|string
+     */
+    protected static function _mb_str_replace($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
+    {
+
+        if (is_array($subject)) {
+            $result = array();
+            foreach ($subject as $item) {
+                $result[] = static::_mb_str_replace($search, $replace, $item, $case_sensitive, $encoding, $count);
+            }
+            return $result;
+        }
+
+        if (!is_array($search)) {
+            return static::_mb_str_replace_i($search, $replace, $subject, $case_sensitive, $encoding, $count);
+        }
+
+        $replace_is_array = is_array($replace);
+        foreach ($search as $key => $value) {
+            $subject = static::_mb_str_replace_i($value, $replace_is_array ? $replace[$key]
+                : $replace, $subject, $case_sensitive, $encoding, $count);
+        }
+        return $subject;
+    }
+
+    /**
+     * Implementation of mb_str_replace. Do not call directly.
+     *
+     * @see     https://github.com/faceleg/php-mb_str_replace
+     * @static
+     * @param        $search
+     * @param        $replace
+     * @param        $subject
+     * @param bool   $case_Sensitive
+     * @param string $encoding
+     * @param null   $count
+     * @return string
+     */
+    protected static function _mb_str_replace_i($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
+    {
+
+        $search_length = mb_strlen($search, $encoding);
+        $subject_length = mb_strlen($subject, $encoding);
+        $offset = 0;
+        $result = '';
+
+        while ($offset < $subject_length) {
+            $match = $case_sensitive ? mb_strpos($subject, $search, $offset, $encoding)
+                : mb_stripos($subject, $search, $offset, $encoding);
+            if ($match === false) {
+                if ($offset === 0) {
+                    // No match was ever found, just return the subject.
+                    return $subject;
+                }
+                // Append the final portion of the subject to the replaced.
+                $result .= mb_substr($subject, $offset, $subject_length - $offset, $encoding);
+                break;
+            }
+            if ($count !== null) {
+                $count++;
+            }
+            $result .= mb_substr($subject, $offset, $match - $offset, $encoding);
+            $result .= $replace;
+            $offset = $match + $search_length;
+        }
+        return $result;
+    }
+
     /**
      * Returns a lowercased string.
      *
