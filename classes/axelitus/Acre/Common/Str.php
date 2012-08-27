@@ -340,6 +340,19 @@ class Str
         return !(($case_sensitive) ? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
 
+    public static function contains($input, $search, $case_sensitive = true)
+    {
+        if (!is_string($input) or !is_string($search)) {
+            throw new InvalidArgumentException("Both parameters \$input and \$search must be strings.");
+        }
+
+        if ($case_sensitive) {
+            return (strpos($input, $search) !== false) ? true : false;
+        } else {
+            return (stripos($input, $search) !== false) ? true : false;
+        }
+    }
+
     /**
      * Verifies if the input string is one of the values of the given array.
      *
