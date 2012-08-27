@@ -132,7 +132,7 @@ abstract class Magic_Object
             throw new InvalidArgumentException("The \$property parameter must be a non-empty string.");
         }
 
-        $method = 'get'.Str::ucfirst($property);
+        $method = 'set'.Str::ucfirst($property);
         return $this->hasCallableMethod($method);
     }
 
@@ -149,7 +149,7 @@ abstract class Magic_Object
             throw new InvalidArgumentException("The \$property parameter must be a non-empty string.");
         }
 
-        $method = 'set'.Str::ucfirst($property);
+        $method = 'get'.Str::ucfirst($property);
         return $this->hasCallableMethod($method);
     }
 
