@@ -134,6 +134,7 @@ class Str
             foreach ($subject as $item) {
                 $result[] = static::_mb_str_replace($search, $replace, $item, $case_sensitive, $encoding, $count);
             }
+
             return $result;
         }
 
@@ -146,6 +147,7 @@ class Str
             $subject = static::_mb_str_replace_i($value, $replace_is_array ? $replace[$key]
                 : $replace, $subject, $case_sensitive, $encoding, $count);
         }
+
         return $subject;
     }
 
@@ -189,6 +191,7 @@ class Str
             $result .= $replace;
             $offset = $match + $search_length;
         }
+
         return $result;
     }
 
@@ -586,8 +589,7 @@ class Str
         }
 
         $separated = preg_replace_callback('/(^.[^A-Z]+$)|(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
-            function($matches) use ($separator, $transform, $encoding)
-            {
+            function ($matches) use ($separator, $transform, $encoding) {
                 $transformed = trim($matches[0]);
                 $count_matches = count($matches);
 
@@ -680,5 +682,50 @@ class Str
         $new_string .= count($tags = array_reverse($tags)) ? '</'.implode('></', $tags).'>' : '';
 
         return $new_string;
+    }
+
+    /**
+     * version of sprintf for cases where named arguments are desired (php syntax)
+     *
+     * with sprintf: sprintf('second: %2$s ; first: %1$s', '1st', '2nd');
+     *
+     * with sprintfn: sprintfn('second: %second$s ; first: %first$s', array(
+     *  'first' => '1st',
+     *  'second'=> '2nd'
+     * ));
+     *
+     * @author  nate@frickenate.com
+     * @param string $format sprintf format string, with any number of named arguments
+     * @param array  $args   array of [ 'arg_name' => 'arg value', ... ] replacements to be made
+     *
+     * @return string|false result of sprintf call, or bool false on error
+     */
+    public static function sprintf($format, array $args = array())
+    {
+        // Insert predefined values
+        $args = array('cr' => "\r", 'lf' => "\n", 'crlf' => "\r\n", 'tab' => "\t") + $args;
+
+        // map of argument names to their corresponding sprintf numeric argument value
+        $arg_nums = array_slice(array_flip(array_keys(array(0 => 0) + $args)), 1);
+
+        // find the next named argument. each search starts at the end of the previous replacement.
+        for ($pos = 0; preg_match('/(?<=%)([a-zA-Z_]\w*)(?=%)/', $format, $match, PREG_OFFSET_CAPTURE, $pos);) {
+            $arg_pos = $match[0][1];
+            $arg_len = strlen($match[0][0]);
+            $arg_key = $match[1][0];
+
+            // programmer did not supply a value for the named argument found in the format string
+            if (!array_key_exists($arg_key, $arg_nums)) {
+                user_error("Str::sprintf(): Missing argument '${arg_key}'", E_USER_WARNING);
+
+                return false;
+            }
+
+            // replace the named argument with the corresponding numeric one
+            $format = substr_replace($format, $replace = $arg_nums[$arg_key], $arg_pos, $arg_len);
+            $pos = $arg_pos + strlen($replace); // skip to end of replacement for next iteration
+        }
+
+        return vsprintf($format, array_values($args));
     }
 }
