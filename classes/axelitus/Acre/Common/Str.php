@@ -685,47 +685,56 @@ class Str
     }
 
     /**
-     * version of sprintf for cases where named arguments are desired (php syntax)
+     * Function sprintf for named variables inside format.
+     * Args are only used if found on format.
      *
-     * with sprintf: sprintf('second: %2$s ; first: %1$s', '1st', '2nd');
+     * Predefined tags (which can be overwritten passing them as args):
+     * %cr$s -> \r
+     * %lf$s -> \n
+     * %crlf$s-> \r\n
      *
-     * with sprintfn: sprintfn('second: %second$s ; first: %first$s', array(
-     *  'first' => '1st',
-     *  'second'=> '2nd'
-     * ));
+     * This method is based on the work of Nate Bessette (www.twitter.com/frickenate)
      *
-     * @author  nate@frickenate.com
-     * @param string $format sprintf format string, with any number of named arguments
-     * @param array  $args   array of [ 'arg_name' => 'arg value', ... ] replacements to be made
+     * TODO: I think this does not work if %s are present in string. Test for numbered variables in format
      *
-     * @return string|false result of sprintf call, or bool false on error
+     * @param string $format    The format to replace the named variables into
+     * @param array  $args      The args to be replaced (var => replacement).
+     * @return string|bool  The string with args replaced or false on error
      */
     public static function sprintf($format, array $args = array())
     {
-        // Insert predefined values
-        $args = array('cr' => "\r", 'lf' => "\n", 'crlf' => "\r\n", 'tab' => "\t") + $args;
+        if (!is_string($format)) {
+            throw new InvalidArgumentException("The format must be a string.");
+        }
 
-        // map of argument names to their corresponding sprintf numeric argument value
-        $arg_nums = array_slice(array_flip(array_keys(array(0 => 0) + $args)), 1);
+        // The pattern to match variables
+        $pattern = '/(?<=%)([a-zA-Z0-9_]\w*)(?=\$)/';
 
-        // find the next named argument. each search starts at the end of the previous replacement.
-        for ($pos = 0; preg_match('/(?<=%)([a-zA-Z_]\w*)(?=%)/', $format, $match, PREG_OFFSET_CAPTURE, $pos);) {
-            $arg_pos = $match[0][1];
-            $arg_len = strlen($match[0][0]);
-            $arg_key = $match[1][0];
+        // Add predefined values
+        $pool = array('cr' => "\r", 'lf' => "\n", 'crlf' => "\r\n", 'tab' => "\t") + $args;
 
-            // programmer did not supply a value for the named argument found in the format string
-            if (!array_key_exists($arg_key, $arg_nums)) {
-                user_error("Str::sprintf(): Missing argument '${arg_key}'", E_USER_WARNING);
+        // Build args array and substitute variables with numbers
+        $args = array();
+        for ($pos = 0; preg_match($pattern, $format, $match, PREG_OFFSET_CAPTURE, $pos);) {
+            list($var_key, $var_pos) = $match[0];
+
+            if (!array_key_exists($var_key, $pool)) {
+                throw new BadFunctionCallException("Str::sprintf(): Missing argument '${var_key}'", E_USER_WARNING);
 
                 return false;
             }
 
-            // replace the named argument with the corresponding numeric one
-            $format = substr_replace($format, $replace = $arg_nums[$arg_key], $arg_pos, $arg_len);
-            $pos = $arg_pos + strlen($replace); // skip to end of replacement for next iteration
+            array_push($args, $pool[$var_key]);
+            $format = substr_replace($format, $index = count($args), $var_pos, static::length($var_key));
+            $pos = $var_pos + static::length($index); // skip to end of replacement for next iteration
         }
 
-        return vsprintf($format, array_values($args));
+        // Final check to see that everything is ok
+        preg_match_all($pattern, $format, $match, PREG_OFFSET_CAPTURE);
+        if (count($match[0]) != count($args)) {
+            throw new LengthException("Something went wrong and the number of arguments differs from the number of variables in format.");
+        }
+
+        return vsprintf($format, $args);
     }
 }
