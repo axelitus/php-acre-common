@@ -198,6 +198,16 @@ class Arr implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Gets the data as an array.
+     *
+     * @return array The array data.
+     */
+    public function getArray()
+    {
+        return $this->_data;
+    }
+
+    /**
      * Sets an array item (dot-notated) to the value.
      *
      * @author  FuelPHP (http://fuelphp.com)
