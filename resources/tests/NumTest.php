@@ -51,19 +51,19 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_high = 12;
         $value = 5;
 
-        $output = Num::between($value, $num_low, $num_high, false, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_NON_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, false, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_HIGH_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_LOW_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_BOTH_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
@@ -74,19 +74,19 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_high = 12;
         $value = 7;
 
-        $output = Num::between($value, $num_low, $num_high, false, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_NON_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, false, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_HIGH_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_LOW_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_BOTH_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
@@ -97,19 +97,19 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_high = 12;
         $value = 12;
 
-        $output = Num::between($value, $num_low, $num_high, false, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_NON_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, false, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_HIGH_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_LOW_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_BOTH_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
@@ -120,19 +120,19 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_high = 3;
         $value = 2;
 
-        $output = Num::between($value, $num_low, $num_high, false, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_NON_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, false, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_HIGH_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_LOW_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertFalse($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_BOTH_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertFalse($output, $message);
 
@@ -143,20 +143,62 @@ class NumTest extends \PHPUnit_Framework_TestCase
         $num_high = 3;
         $value = "5";
 
-        $output = Num::between($value, $num_low, $num_high, false, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_NON_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, false, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_HIGH_INCLUSIVE);
         $message = "Is $value between ]{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, false);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_LOW_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}[";
         $this->assertTrue($output, $message);
 
-        $output = Num::between($value, $num_low, $num_high, true, true);
+        $output = Num::between($value, $num_low, $num_high, Num::RANGE_BOTH_INCLUSIVE);
         $message = "Is $value between [{$num_low},{$num_high}]";
         $this->assertTrue($output, $message);
+    }
+
+    /**
+     * Tests the Num::randomInt function
+     *
+     * @depends testIsInt
+     */
+    public function testRandomInt()
+    {
+        $numTests = 5;
+
+        // Both Inclusive
+        for ($i = 0; $i < $numTests; $i++) {
+            $rand = Num::randomInt(5);
+            $message = "Random number {$rand} in range [0,5]";
+            $output = (Num::isInt($rand) and $rand >= 0 and $rand <= 5);
+            $this->assertTrue($output, $message);
+        }
+
+        // Low Inclusive
+        for ($i = 0; $i < $numTests; $i++) {
+            $rand = Num::randomInt(5, 2, Num::RANGE_LOW_INCLUSIVE);
+            $message = "Random number {$rand} in range [2,5[";
+            $output = (Num::isInt($rand) and $rand >= 2 and $rand < 5);
+            $this->assertTrue($output, $message);
+        }
+
+        // High Inclusive
+        for ($i = 0; $i < $numTests; $i++) {
+            $rand = Num::randomInt(13, 7, Num::RANGE_HIGH_INCLUSIVE);
+            $message = "Random number {$rand} in range ]7,13]";
+            $output = (Num::isInt($rand) and $rand > 7 and $rand <= 13);
+            $this->assertTrue($output, $message);
+        }
+
+        // Non Inclusive
+        for ($i = 0; $i < $numTests; $i++) {
+            $rand = Num::randomInt(13, 7, Num::RANGE_NON_INCLUSIVE);
+            $message = "Random number {$rand} in range ]7,13[";
+            $output = (Num::isInt($rand) and $rand > 7 and $rand < 13);
+            $this->assertTrue($output, $message);
+        }
     }
 }

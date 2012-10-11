@@ -25,6 +25,14 @@ use InvalidArgumentException;
  */
 class Num
 {
+    const RANGE_NON_INCLUSIVE = 'non_inclusive';
+
+    const RANGE_LOW_INCLUSIVE = 'low_inclusive';
+
+    const RANGE_HIGH_INCLUSIVE = 'high_inclusive';
+
+    const RANGE_BOTH_INCLUSIVE = 'both_inclusive';
+
     /**
      * Tests if a value is an integer.
      *
@@ -32,12 +40,36 @@ class Num
      * its variable type (as the is_int function does). Even a string containing an integer value will return true.
      *
      * @static
-     * @param   string  $value    The value to be tested
+     * @param   mixed   $value    The value to be tested
      * @return  bool    Whether the value is an integer regardless of its variable type
      */
     public static function isInt($value)
     {
         return (is_int($value) or ctype_digit(strval($value)));
+    }
+
+    /**
+     * @param $range_def
+     * @return array
+     */
+    private static function getRangeBehaviour($range_def)
+    {
+        switch ($range_def) {
+            case self::RANGE_NON_INCLUSIVE:
+                $range_behave = array('low' => false, 'high' => false);
+                break;
+            case self::RANGE_LOW_INCLUSIVE:
+                $range_behave = array('low' => true, 'high' => false);
+                break;
+            case self::RANGE_HIGH_INCLUSIVE:
+                $range_behave = array('low' => false, 'high' => true);
+                break;
+            case self::RANGE_BOTH_INCLUSIVE:
+            default:
+                $range_behave = array('low' => true, 'high' => true);
+        }
+
+        return $range_behave;
     }
 
     /**
@@ -48,30 +80,62 @@ class Num
      * $low_closed and $high_closed parameters (all possible variations: ]a,b[ -or- ]a,b] -or- [a,b[ -or- [a,b]).
      *
      * @static
-     * @param   int|float|double    $value            The number to be tested against the range
+     * @param   int|float|double    $value          The number to be tested against the range
      * @param   int|float|double    $low            The range's low limit
      * @param   int|float|double    $high           The range's high limit
-     * @param   bool                $low_closed     Whether the low limit is closed (inclusive)
-     * @param   bool                $high_closed    Whether the high limit is closed (inclusive)
+     * @param   string              $range_def      The definition of the range type: non-inclusive, low-inclusive, high-inclusive, both-inclusive
      * @return  bool    Whether the value is between the given range
      * @throws \InvalidArgumentException
      */
-    public static function between($value, $low, $high, $low_closed = true, $high_closed = true)
+    public static function between($value, $low, $high, $range_def = self::RANGE_BOTH_INCLUSIVE)
     {
         if (!is_numeric($value) or !is_numeric($low) or !is_numeric($high)) {
             throw new InvalidArgumentException("The \$value, \$low and \$high parameters must be numeric.");
         }
 
-        $low_limit = min($low, $high);
-        if (!($low_test = ($low_closed) ? $low_limit <= $value : $low_limit < $value)) {
+        $range_behave = self::getRangeBehaviour($range_def);
+
+        $low_lim = min($low, $high);
+        if (!($low_test = ($range_behave['low']) ? $low_lim <= $value : $low_lim < $value)) {
             return false;
         }
 
-        $high_limit = max($low, $high);
-        if (!($high_test = ($high_closed) ? $high_limit >= $value : $high_limit > $value)) {
+        $high_lim = max($low, $high);
+        if (!($high_test = ($range_behave['high']) ? $high_lim >= $value : $high_lim > $value)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param        $high
+     * @param int    $low
+     * @param string $range_def
+     */
+    public static function randomInt($high, $low = 0, $range_def = self::RANGE_BOTH_INCLUSIVE)
+    {
+        if (!self::isInt($high) || !self::isInt($low)) {
+            throw new InvalidArgumentException("The \$high and \$low parameters must be integers.");
+        }
+
+        $range_behave = self::getRangeBehaviour($range_def);
+
+        if($low == $high) {
+            if(!($range_behave['low'] and $range_behave['high'])) {
+                throw new InvalidArgumentException("Defining a non-inclusive range with both high and low limits set to the same value is invalid.");
+            } else {
+                return $high;
+            }
+        }
+
+        $low_lim = min($low, $high) + (($range_behave['low'])? 0 : 1);
+        $high_lim = max($low, $high) - (($range_behave['high']) ? 0 : 1);
+
+        if($low_lim > $high_lim) {
+            throw new InvalidArgumentException("Defining a non-inclusive range must have a separation of at least two between limits.");
+        }
+
+        return mt_rand($low_lim, $high_lim);
     }
 }
