@@ -108,6 +108,8 @@ abstract class Singleton
 
     /**
      * No serialization allowed
+     *
+     * @final
      */
     final public function __sleep()
     {
@@ -116,6 +118,8 @@ abstract class Singleton
 
     /**
      * No cloning allowed
+     *
+     * @final
      */
     final public function __clone()
     {

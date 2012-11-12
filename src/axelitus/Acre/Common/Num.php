@@ -49,8 +49,11 @@ class Num
     }
 
     /**
-     * @param $range_def
-     * @return array
+     * Gets the given textual range definition expressed as a boolean array
+     *
+     * @static
+     * @param string    $range_def  The textual range definition (one of the RANGE_* constants)
+     * @return array    The range definition expressed as a boolean array
      */
     private static function getRangeBehaviour($range_def)
     {
@@ -111,6 +114,7 @@ class Num
     /**
      * Returns a random integer using the defined range.
      *
+     * @static
      * @param   int     $high          The range's upper limit (high value)
      * @param   int     $low           The range's lower limit (low value)
      * @param   string  $range_def     The type of range it is (accepted values: one of the class constants RANGE_*)

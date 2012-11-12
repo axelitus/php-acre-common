@@ -70,6 +70,7 @@ class Str
      * Returns the length of a string. The $encoding parameter is used to determine the input string encoding
      * and thus use the proper method. The function uses mb_strlen if present and falls back to strlen.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -88,6 +89,7 @@ class Str
      * Returns a substring from the given string. The $encoding parameter is used to determine the input string encoding
      * and thus use the proper method. The function uses mb_substr if present and falls back to substr.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string    $input        The input string
      * @param   int       $start        The start index from where to begin extracting
@@ -230,6 +232,7 @@ class Str
      * Returns a lowercased string. The $encoding parameter is used to determine the input string encoding
      * and thus use the proper method. The functions uses mb_strtolower if present and falls back to strtolower.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -248,6 +251,7 @@ class Str
      * Returns an uppercased string. The $encoding parameter is used to determine the input string encoding
      * and thus use the proper method. The functions uses mb_strtoupper if present and falls back to strtoupper.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -267,6 +271,7 @@ class Str
      * The $encoding parameter is used to determine the input string encoding and thus use the proper method.
      * The function uses mb_strtolower, mb_mb_substr and mb_strlen if present and falls back to lcfirst.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -287,6 +292,7 @@ class Str
      * The $encoding parameter is used to determine the input string encoding and thus use the proper method.
      * The function uses mb_strtoupper, mb_mb_substr and mb_strlen if present and falls back to ucfirst.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -307,6 +313,7 @@ class Str
      * encoding and thus use the proper method. The function uses mb_convert_case if present and falls back to ucwords.     *
      * The ucwords function normally does not lowercase the input string first, this function does.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
      * @param   string  $input      The input string
      * @param   string  $encoding   The encoding of the input string
@@ -327,6 +334,7 @@ class Str
      * The length of the returned string can be controlled with the $length parameter, but every characters is
      * randomized independently with each loop.
      *
+     * @static
      * @param   int     $length     The length of the output string
      * @param   string  $chars      The pool of characters to randomize from
      * @param   bool    $shuffle    Whether to shuffle the character string to increase randomness (entropy)
@@ -362,6 +370,7 @@ class Str
      *
      * This function is based on FuelPHP's \Fuel\Core\Str random function.
      *
+     * @static
      * @param   string  $type       The type of random string to get
      * @param   int     $length     The length of the output string
      * @param   bool    $shuffle    Whether to shuffle the character pool to increase randomness (entropy)
@@ -411,6 +420,7 @@ class Str
      * Verifies if a string begins with a substring. The $encoding parameter is used to determine the input string
      * encoding and thus use the proper method. The comparison is case-sensitive by default.
      *
+     * @static
      * @param   string  $input              The input string to compare to
      * @param   string  $search             The substring to compare the beginning to
      * @param   bool    $case_sensitive     Whether the comparison is case-sensitive
@@ -435,6 +445,7 @@ class Str
      * Verifies if a string ends with a substring. The $encoding parameter is used to determine the input string
      * encoding and thus use the proper method.
      *
+     * @static
      * @param   string  $input              The input string to compare to
      * @param   string  $search             The substring to compare the ending to
      * @param   bool    $case_sensitive     Whether the comparison is case-sensitive
@@ -457,6 +468,18 @@ class Str
         return !(($case_sensitive) ? strcmp($substr, $search) : strcasecmp($substr, $search));
     }
 
+    /**
+     * Verifies if a string contains a substring. The $encoding parameter is used to determine the
+     * encoding and thus the proper method.
+     *
+     * @static
+     * @param        $input             The input string to compare to
+     * @param        $search            The substring to compare the ending to
+     * @param bool   $case_sensitive    Whether the comparison is case-sensitive
+     * @param string $encoding          The encoding of the input string
+     * @return bool     Whether the input string contains the substring
+     * @throws \InvalidArgumentException
+     */
     public static function contains($input, $search, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
     {
         if (!is_string($input) or !is_string($search)) {
@@ -482,6 +505,7 @@ class Str
      * be returned instead of the default bool value. The comparison can be case sensitive or
      * case insensitive (it is made with strcmp and strcasecmp respectively).
      *
+     * @static
      * @param   string      $input              The input string
      * @param   array       $values             The strings array to look for the input string
      * @param   bool        $case_sensitive     Whether the comparison is case-sensitive
@@ -527,6 +551,7 @@ class Str
      * When the space char is not used as a separator, each word is converted to studly caps on its own,
      * otherwise the result will be a single studly-caps-cased string.
      *
+     * @static
      * @param   string  $input          The input string
      * @param   array   $separators     An array containing separators to split the input string
      * @param   string  $encoding       The encoding of the input string
@@ -572,6 +597,7 @@ class Str
      * When the space char is not used as a separator, each word is converted to camel case on its own,
      * otherwise the result will be a single camel-cased string.
      *
+     * @static
      * @param   string  $input          The input string
      * @param   array   $separators     An array containing separators to split the input string
      * @param   string  $encoding       The encoding of the input string
@@ -602,6 +628,7 @@ class Str
      * space): 'lower', 'upper', 'lcfirst', 'ucfirst', 'ucwords' by using the $transform parameter (other values will
      * be ignored and no transformation will be made thus returning the separated words unmodified).
      *
+     * @static
      * @param   string          $input      The input string
      * @param   null|string     $transform  The transformation to be run for each word
      * @param   string          $separator  The separator to be used
@@ -671,8 +698,8 @@ class Str
      *
      * Truncates a string to the given length. It will optionally preserve HTML tags if $is_html is set to true.
      *
+     * @static
      * @author  FuelPHP (http://fuelphp.com)
-     *
      * @param   string  $string        The string to truncate
      * @param   int     $limit         The number of characters to truncate too
      * @param   string  $continuation  The string to use to denote it was truncated
@@ -730,6 +757,7 @@ class Str
      *
      * This method is based on the work of Nate Bessette (www.twitter.com/frickenate)
      *
+     * @static
      * @param string $format    The format to replace the named variables into
      * @param array  $args      The args to be replaced (var => replacement).
      * @return string|bool  The string with args replaced or false on error
