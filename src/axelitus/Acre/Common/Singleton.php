@@ -46,10 +46,10 @@ abstract class Singleton
      * The parameters are passed along to the init method if present to autoinitialize (configure) the singleton.
      *
      * @static
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,...     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function forge()
+    public static function forge($params = null)
     {
         return call_user_func_array(get_called_class().'::instance', func_get_args());
     }
@@ -61,12 +61,13 @@ abstract class Singleton
      * The parameters are passed along to the init method if present to autoinitialize (configure) the singleton.
      *
      * @static
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,...     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function forgeReplace()
+    public static function forgeReplace($params = null)
     {
         static::removeInstance();
+
         return call_user_func_array(get_called_class().'::instance', func_get_args());
     }
 
@@ -77,14 +78,17 @@ abstract class Singleton
      * to autoinitialize (configure) the singleton.
      *
      * @static
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,...     The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function instance()
+    public static function instance($params = null)
     {
-        if(static::$_instance == null or !static::$_instance instanceof static) {
+        if (static::$_instance == null or !static::$_instance instanceof static) {
             static::$_instance = new static();
-            if(method_exists(static::$_instance, static::INIT_METHOD) and is_callable(array(static::$_instance, static::INIT_METHOD))) {
+            if (method_exists(static::$_instance, static::INIT_METHOD) and is_callable(array(static::$_instance,
+                                                                                             static::INIT_METHOD
+                                                                                       ))
+            ) {
                 call_user_func_array(array(static::$_instance, static::INIT_METHOD), func_get_args());
             }
         }

@@ -26,13 +26,13 @@ abstract class Multiton
      **/
     const INIT_METHOD = 'init';
 
-     /**
+    /**
      * @static
      * @var mixed   The singleton's instances array
      **/
     protected static $_instances = array();
 
-     /**
+    /**
      * Prevent this class from being instantiated (but allow sub-classes to create new instances).
      */
     final protected function __construct()
@@ -49,10 +49,10 @@ abstract class Multiton
      *
      * @static
      * @param string    $key        The singleton's key (name)
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,... The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function forge($key)
+    public static function forge($key, $params = null)
     {
         return call_user_func_array(get_called_class().'::instance', func_get_args());
     }
@@ -67,12 +67,13 @@ abstract class Multiton
      *
      * @static
      * @param string    $key        The singleton's key (name)
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,... The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function forgeReplace($key)
+    public static function forgeReplace($key, $params = null)
     {
         static::removeInstance($key);
+
         return call_user_func_array(get_called_class().'::instance', func_get_args());
     }
 
@@ -85,14 +86,17 @@ abstract class Multiton
      *
      * @static
      * @param string    $key        The singleton's key (name)
-     * @param mixed     $params     The singleton's init parameters
+     * @param mixed     $params,... The singleton's init parameters
      * @return mixed    The newly created singleton's instance
      */
-    public static function instance($key)
+    public static function instance($key, $params = null)
     {
-        if(empty(static::$_instances) or !isset(static::$_instances[$key]) or !static::$_instances[$key] instanceof static) {
+        if (empty(static::$_instances) or !isset(static::$_instances[$key]) or !static::$_instances[$key] instanceof static) {
             static::$_instances[$key] = new static();
-            if(method_exists(static::$_instances[$key], static::INIT_METHOD) and is_callable(array(static::$_instances[$key], static::INIT_METHOD))) {
+            if (method_exists(static::$_instances[$key], static::INIT_METHOD) and is_callable(array(static::$_instances[$key],
+                                                                                                    static::INIT_METHOD
+                                                                                              ))
+            ) {
                 call_user_func_array(array(static::$_instances[$key], static::INIT_METHOD), func_get_args());
             }
         }

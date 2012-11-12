@@ -80,10 +80,10 @@ class Num
      * $low_closed and $high_closed parameters (all possible variations: ]a,b[ -or- ]a,b] -or- [a,b[ -or- [a,b]).
      *
      * @static
-     * @param   int|float|double    $value          The number to be tested against the range
-     * @param   int|float|double    $low            The range's low limit
-     * @param   int|float|double    $high           The range's high limit
-     * @param   string              $range_def      The definition of the range type: non-inclusive, low-inclusive, high-inclusive, both-inclusive
+     * @param   int|float    $value          The number to be tested against the range
+     * @param   int|float    $low            The range's low limit
+     * @param   int|float    $high           The range's high limit
+     * @param   string       $range_def      The definition of the range type: non-inclusive, low-inclusive, high-inclusive, both-inclusive
      * @return  bool    Whether the value is between the given range
      * @throws \InvalidArgumentException
      */
@@ -109,9 +109,13 @@ class Num
     }
 
     /**
-     * @param        $high
-     * @param int    $low
-     * @param string $range_def
+     * Returns a random integer using the defined range.
+     *
+     * @param   int     $high          The range's upper limit (high value)
+     * @param   int     $low           The range's lower limit (low value)
+     * @param   string  $range_def     The type of range it is (accepted values: one of the class constants RANGE_*)
+     * @return  int     The generated random int as specified by the range
+     * @throws  InvalidArgumentException
      */
     public static function randomInt($high, $low = 0, $range_def = self::RANGE_BOTH_INCLUSIVE)
     {
@@ -121,18 +125,18 @@ class Num
 
         $range_behave = self::getRangeBehaviour($range_def);
 
-        if($low == $high) {
-            if(!($range_behave['low'] and $range_behave['high'])) {
+        if ($low == $high) {
+            if (!($range_behave['low'] and $range_behave['high'])) {
                 throw new InvalidArgumentException("Defining a non-inclusive range with both high and low limits set to the same value is invalid.");
             } else {
                 return $high;
             }
         }
 
-        $low_lim = min($low, $high) + (($range_behave['low'])? 0 : 1);
+        $low_lim = min($low, $high) + (($range_behave['low']) ? 0 : 1);
         $high_lim = max($low, $high) - (($range_behave['high']) ? 0 : 1);
 
-        if($low_lim > $high_lim) {
+        if ($low_lim > $high_lim) {
             throw new InvalidArgumentException("Defining a non-inclusive range must have a separation of at least two between limits.");
         }
 

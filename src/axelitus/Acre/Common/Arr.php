@@ -90,6 +90,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 
         // return success
         $return = $input;
+
         return true;
     }
 
@@ -187,6 +188,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             foreach ($key as $k) {
                 $return[$k] = $this->get($k, $default);
             }
+
             return $return;
         }
 
@@ -220,6 +222,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         if (is_null($key)) {
             $this->_data = $value;
+
             return $this;
         }
 
@@ -230,6 +233,7 @@ class Arr implements ArrayAccess, Iterator, Countable
         }
 
         static::dotSet($key, $this->_data, $value);
+
         return $this;
     }
 
@@ -294,6 +298,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             foreach ($key as $k) {
                 $return[$k] = $this->delete($k);
             }
+
             return $return;
         }
 
@@ -488,8 +493,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         $return = array();
         $currKey = array();
-        $flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self)
-        {
+        $flatten = function (&$array, &$currKey, &$return, $glue, $indexed, $self) {
             foreach ($array as $key => &$value) {
                 $curr_key[] = $key;
                 if ((is_array($value) or $value instanceof Iterator)
@@ -529,25 +533,24 @@ class Arr implements ArrayAccess, Iterator, Countable
      *
      * @author  FuelPHP (http://fuelphp.com)
      * @see     FuelPHP Kernel Package (http://packagist.org/packages/fuel/core)
-     * @param   array  $array  multiple variables all of which must be arrays
+     * @param   array  $array,...   multiple variables all of which must be arrays
      * @return  Arr
      * @throws  \InvalidArgumentException
      */
     public function merge($array)
     {
-        $merge = function(&$array1, $array2, $self)
-        {
+        $merge = function (&$array1, $array2, $self) {
             foreach ($array2 as $k => &$v) {
                 // numeric keys are appended
                 if (is_int($k)) {
                     array_key_exists($k, $array1) ? array_push($array1, $v) : $array1[$k] = $v;
                 } elseif (is_array($v) and array_key_exists($k, $array1) and is_array($array1[$k])) {
                     $array1[$k] = $self($array1[$k], $v);
-                }
-                else {
+                } else {
                     $array1[$k] = $v;
                 }
             }
+
             return $array1;
         };
 
@@ -576,6 +579,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function prepend($key, $value = null)
     {
         $this->_data = (is_array($key) ? $key : array($key => $value)) + $this->_data;
+
         return $this;
     }
 
@@ -591,6 +595,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         return count($this->_data);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="ArrayAccess Interface">
@@ -646,6 +651,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         $this->delete($offset);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Iterator Interface">

@@ -115,7 +115,8 @@ class Str
         $replace,
         $case_sensitive = true,
         $encoding = self::DEFAULT_ENCODING
-    ) {
+    )
+    {
         return function_exists('mb_strlen')
             ? static::_mb_str_replace($search, $replace, $input, $case_sensitive, $encoding)
             : (($case_sensitive) ? (strpos($input, $search) !== false ? true : false)
@@ -140,7 +141,8 @@ class Str
         $case_sensitive = true,
         $encoding = self::DEFAULT_ENCODING,
         &$count = null
-    ) {
+    )
+    {
 
         if (is_array($subject)) {
             $result = array();
@@ -191,7 +193,8 @@ class Str
         $case_sensitive = true,
         $encoding = self::DEFAULT_ENCODING,
         &$count = null
-    ) {
+    )
+    {
 
         $search_length = mb_strlen($search, $encoding);
         $subject_length = mb_strlen($subject, $encoding);
@@ -722,7 +725,8 @@ class Str
      * Predefined tags (which can be overwritten passing them as args):
      * %cr$s -> \r
      * %lf$s -> \n
-     * %crlf$s-> \r\n
+     * %crlf$s -> \r\n
+     * %tab$s -> \t
      *
      * This method is based on the work of Nate Bessette (www.twitter.com/frickenate)
      *
@@ -735,7 +739,7 @@ class Str
      * @throws BadFunctionCallException
      * @throws LengthException
      */
-    public static function sprintf($format, array $args = array())
+    public static function nsprintf($format, array $args = array())
     {
         if (!is_string($format)) {
             throw new InvalidArgumentException("The format must be a string.");
