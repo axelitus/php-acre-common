@@ -13,6 +13,8 @@
 namespace axelitus\Acre\Common;
 
 use InvalidArgumentException;
+use BadFunctionCallException;
+use LengthException;
 
 /**
  * Str Class
@@ -107,8 +109,13 @@ class Str
             : substr($input, $start, $length);
     }
 
-    public static function replace($input, $search, $replace, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING)
-    {
+    public static function replace(
+        $input,
+        $search,
+        $replace,
+        $case_sensitive = true,
+        $encoding = self::DEFAULT_ENCODING
+    ) {
         return function_exists('mb_strlen')
             ? static::_mb_str_replace($search, $replace, $input, $case_sensitive, $encoding)
             : (($case_sensitive) ? (strpos($input, $search) !== false ? true : false)
@@ -126,8 +133,14 @@ class Str
      * @param null   $count
      * @return array|string
      */
-    protected static function _mb_str_replace($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
-    {
+    protected static function _mb_str_replace(
+        $search,
+        $replace,
+        $subject,
+        $case_sensitive = true,
+        $encoding = self::DEFAULT_ENCODING,
+        &$count = null
+    ) {
 
         if (is_array($subject)) {
             $result = array();
@@ -144,8 +157,15 @@ class Str
 
         $replace_is_array = is_array($replace);
         foreach ($search as $key => $value) {
-            $subject = static::_mb_str_replace_i($value, $replace_is_array ? $replace[$key]
-                : $replace, $subject, $case_sensitive, $encoding, $count);
+            $subject = static::_mb_str_replace_i(
+                $value,
+                $replace_is_array ? $replace[$key]
+                    : $replace,
+                $subject,
+                $case_sensitive,
+                $encoding,
+                $count
+            );
         }
 
         return $subject;
@@ -154,18 +174,24 @@ class Str
     /**
      * Implementation of mb_str_replace. Do not call directly.
      *
-     * @see     https://github.com/faceleg/php-mb_str_replace
+     * @see      https://github.com/faceleg/php-mb_str_replace
      * @static
      * @param        $search
      * @param        $replace
      * @param        $subject
-     * @param bool   $case_Sensitive
+     * @param bool   $case_sensitive
      * @param string $encoding
      * @param null   $count
      * @return string
      */
-    protected static function _mb_str_replace_i($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
-    {
+    protected static function _mb_str_replace_i(
+        $search,
+        $replace,
+        $subject,
+        $case_sensitive = true,
+        $encoding = self::DEFAULT_ENCODING,
+        &$count = null
+    ) {
 
         $search_length = mb_strlen($search, $encoding);
         $subject_length = mb_strlen($subject, $encoding);
@@ -527,6 +553,8 @@ class Str
                 $word = Str::ucfirst($word, $encoding);
             }
             $studly = implode(' ', $words);
+        } else {
+            $studly = $input;
         }
 
         return $studly;
@@ -588,7 +616,8 @@ class Str
             throw new InvalidArgumentException("The \$separator parameters must have at least one character.");
         }
 
-        $separated = preg_replace_callback('/(^.[^A-Z]+$)|(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
+        $separated = preg_replace_callback(
+            '/(^.[^A-Z]+$)|(^.+?(?=[A-Z]))|( +)(.+?)(?=[A-Z])|([A-Z]+(?=$|[A-Z][a-z])|[A-Z]?[a-z]+)/',
             function ($matches) use ($separator, $transform, $encoding) {
                 $transformed = trim($matches[0]);
                 $count_matches = count($matches);
@@ -606,7 +635,9 @@ class Str
                 $transformed = (($count_matches == 6) ? $separator : '').$transformed;
 
                 return $transformed;
-            }, $input);
+            },
+            $input
+        );
 
         // Do lcfirst and ucfirst transformations
         if (Str::isOneOf($transform, array('lcfirst', 'ucfirst', 'ucwords'))) {
@@ -700,6 +731,9 @@ class Str
      * @param string $format    The format to replace the named variables into
      * @param array  $args      The args to be replaced (var => replacement).
      * @return string|bool  The string with args replaced or false on error
+     * @throws InvalidArgumentException
+     * @throws BadFunctionCallException
+     * @throws LengthException
      */
     public static function sprintf($format, array $args = array())
     {
@@ -720,8 +754,6 @@ class Str
 
             if (!array_key_exists($var_key, $pool)) {
                 throw new BadFunctionCallException("Str::sprintf(): Missing argument '${var_key}'", E_USER_WARNING);
-
-                return false;
             }
 
             array_push($args, $pool[$var_key]);
