@@ -730,8 +730,6 @@ class Str
      *
      * This method is based on the work of Nate Bessette (www.twitter.com/frickenate)
      *
-     * TODO: I think this does not work if %s are present in string. Test for numbered variables in format
-     *
      * @param string $format    The format to replace the named variables into
      * @param array  $args      The args to be replaced (var => replacement).
      * @return string|bool  The string with args replaced or false on error
@@ -744,6 +742,10 @@ class Str
         if (!is_string($format)) {
             throw new InvalidArgumentException("The format must be a string.");
         }
+
+        // Filter unnamed %s strings that should not be processed
+        $filter_regex = '/%s/';
+        $format = preg_replace($filter_regex, '#[:~s]#', $format);
 
         // The pattern to match variables
         $pattern = '/(?<=%)([a-zA-Z0-9_]\w*)(?=\$)/';
@@ -771,6 +773,8 @@ class Str
             throw new LengthException("Something went wrong and the number of arguments differs from the number of variables in format.");
         }
 
-        return vsprintf($format, $args);
+        // Return the original %s strings
+        $filter_regex = '/#\[:~s\]#/';
+        return preg_replace($filter_regex, '%s', vsprintf($format, $args));
     }
 }

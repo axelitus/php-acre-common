@@ -241,20 +241,20 @@ class StrTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests for Str::sprintf()
+     * Tests for Str::nsprintf()
      *
      * @test
      */
     public function testNsprintf()
     {
         $test_string = 'This%tab$sis%tab$sa%tab$stest%tab$sstring.';
-        $output = Str::sprintf($test_string);
+        $output = Str::nsprintf($test_string);
         $expected = "This\tis\ta\ttest\tstring.";
         $this->assertEquals($expected, $output);
 
         // Test if a string with %s works
         $test_string = 'This%tab$sis%tab$sa%tab$stest%tab$sstring. If %s is present ¿does this work?';
-        $output = Str::sprintf($test_string);
+        $output = Str::nsprintf($test_string);
         $expected = "This\tis\ta\ttest\tstring. If %s is present ¿does this work?";
         $this->assertEquals($expected, $output);
     }
