@@ -111,41 +111,39 @@ class Str
             : substr($input, $start, $length);
     }
 
-    public static function replace(
-        $input,
-        $search,
-        $replace,
-        $case_sensitive = true,
-        $encoding = self::DEFAULT_ENCODING
-    )
+    /**
+     * Replaces a substring inside a string.
+     *
+     * @param string $input             The input string
+     * @param string $search            The substring to be replaced
+     * @param string $replace           The substring replacement
+     * @param bool   $case_sensitive    Whether the comparison should be case sensitive
+     * @param string $encoding          The encoding of the input string
+     * @return string   The string with the substring replaced
+     */
+    public static function replace($input, $search, $replace, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
     {
         return function_exists('mb_strlen')
-            ? static::_mb_str_replace($search, $replace, $input, $case_sensitive, $encoding)
-            : (($case_sensitive) ? (strpos($input, $search) !== false ? true : false)
-                : (stripos($input, $search) !== false ? true : false));
+            ? static::_mb_str_replace($search, $replace, $input, $case_sensitive, $encoding, $count)
+            : (($case_sensitive) ? (str_replace($search, $replace, $input, $count))
+                : (str_ireplace($search, $replace, $input, $count)));
     }
 
     /**
+     * Replaces a substring inside a string with multi-byte support
+     *
      * @see     https://github.com/faceleg/php-mb_str_replace
      * @static
-     * @param        $search
-     * @param        $replace
-     * @param        $subject
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
      * @param bool   $case_sensitive
      * @param string $encoding
      * @param null   $count
      * @return array|string
      */
-    protected static function _mb_str_replace(
-        $search,
-        $replace,
-        $subject,
-        $case_sensitive = true,
-        $encoding = self::DEFAULT_ENCODING,
-        &$count = null
-    )
+    protected static function _mb_str_replace($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
     {
-
         if (is_array($subject)) {
             $result = array();
             foreach ($subject as $item) {
@@ -161,15 +159,7 @@ class Str
 
         $replace_is_array = is_array($replace);
         foreach ($search as $key => $value) {
-            $subject = static::_mb_str_replace_i(
-                $value,
-                $replace_is_array ? $replace[$key]
-                    : $replace,
-                $subject,
-                $case_sensitive,
-                $encoding,
-                $count
-            );
+            $subject = static::_mb_str_replace_i($value, ($replace_is_array ? $replace[$key] : $replace), $subject, $case_sensitive, $encoding, $count);
         }
 
         return $subject;
@@ -180,24 +170,16 @@ class Str
      *
      * @see      https://github.com/faceleg/php-mb_str_replace
      * @static
-     * @param        $search
-     * @param        $replace
-     * @param        $subject
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
      * @param bool   $case_sensitive
      * @param string $encoding
      * @param null   $count
      * @return string
      */
-    protected static function _mb_str_replace_i(
-        $search,
-        $replace,
-        $subject,
-        $case_sensitive = true,
-        $encoding = self::DEFAULT_ENCODING,
-        &$count = null
-    )
+    protected static function _mb_str_replace_i($search, $replace, $subject, $case_sensitive = true, $encoding = self::DEFAULT_ENCODING, &$count = null)
     {
-
         $search_length = mb_strlen($search, $encoding);
         $subject_length = mb_strlen($subject, $encoding);
         $offset = 0;
@@ -803,6 +785,7 @@ class Str
 
         // Return the original %s strings
         $filter_regex = '/#\[:~s\]#/';
+
         return preg_replace($filter_regex, '%s', vsprintf($format, $args));
     }
 }
