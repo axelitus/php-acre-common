@@ -41,6 +41,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     /**
      * Forges a new Arr object.
      *
+     * @static
      * @param   array  $data    The Arr object contents (original array)
      * @return  Arr The new created object
      */
@@ -537,8 +538,12 @@ class Arr implements ArrayAccess, Iterator, Countable
      * @return  Arr
      * @throws  \InvalidArgumentException
      */
-    public function merge($array)
+    public function merge($array = null)
     {
+        if ($array === null) {
+            return array();
+        }
+
         $merge = function (&$array1, $array2, $self) {
             foreach ($array2 as $k => &$v) {
                 // numeric keys are appended
