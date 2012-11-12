@@ -43,7 +43,7 @@ abstract class Magic_Object
 
         if ($this->hasProperty($property)) {
             if ($this->hasPropertySetter($property)) {
-                return $this->callPropertySetter($property, $value);
+                $this->callPropertySetter($property, $value);
             } else {
                 throw new RuntimeException("The property '{$property}' is not writeable.");
             }
@@ -122,7 +122,7 @@ abstract class Magic_Object
     /**
      * Determines if the object has a property setter.
      *
-     * @param $property     The property to look for the setter
+     * @param string    $property     The property to look for the setter
      * @return bool
      * @throws \InvalidArgumentException
      */
@@ -133,13 +133,14 @@ abstract class Magic_Object
         }
 
         $method = 'set'.Str::ucfirst($property);
+
         return $this->hasCallableMethod($method);
     }
 
     /**
      * Determines if the object has a property getter.
      *
-     * @param $property     The property to look for the getter
+     * @param string    $property     The property to look for the getter
      * @return bool
      * @throws \InvalidArgumentException
      */
@@ -150,6 +151,7 @@ abstract class Magic_Object
         }
 
         $method = 'get'.Str::ucfirst($property);
+
         return $this->hasCallableMethod($method);
     }
 
@@ -160,7 +162,7 @@ abstract class Magic_Object
      * @param mixed     $args,...   The arguments to call the method
      * @return mixed    The return value for the called method
      * @throws \InvalidArgumentException
-     * @throws \RuntimeError
+     * @throws \RuntimeException
      */
     protected function callMethod($method, $args = null)
     {
@@ -182,8 +184,8 @@ abstract class Magic_Object
     /**
      * Calls the property setter.
      *
-     * @param $property     The property to call the setter method
-     * @param $value        The value to call the setter with
+     * @param string    $property     The property to call the setter method
+     * @param mixed     $value        The value to call the setter with
      * @return mixed    The property setter return value
      * @throws \InvalidArgumentException
      */
@@ -194,13 +196,14 @@ abstract class Magic_Object
         }
 
         $method = 'set'.Str::ucfirst($property);
+
         return $this->callMethod($method, $value);
     }
 
     /**
      * Calls the property getter.
      *
-     * @param $property     The property to call the getter method
+     * @param string    $property     The property to call the getter method
      * @return mixed    The property setter return value
      * @throws \InvalidArgumentException
      */
@@ -211,6 +214,7 @@ abstract class Magic_Object
         }
 
         $method = 'get'.Str::ucfirst($property);
+
         return $this->callMethod($method);
     }
 }
