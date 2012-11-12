@@ -107,8 +107,8 @@ abstract class Multiton
     /**
      * Removes a singleton instance.
      *
-     * @param string    $key    The key of the singleton to remove
      * @static
+     * @param string    $key    The key of the singleton to remove
      */
     public static function removeInstance($key)
     {
@@ -118,6 +118,8 @@ abstract class Multiton
 
     /**
      * Clears the multiton's instances array.
+     *
+     * @static
      */
     public static function clearInstances()
     {
@@ -126,6 +128,8 @@ abstract class Multiton
 
     /**
      * No serialization allowed
+     *
+     * @final
      */
     final public function __sleep()
     {
@@ -134,6 +138,8 @@ abstract class Multiton
 
     /**
      * No cloning allowed
+     *
+     * @final
      */
     final public function __clone()
     {
