@@ -36,7 +36,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     /**
      * @var  array  Holds the object's data
      */
-    protected $_data = array();
+    protected $data = array();
 
     /**
      * Forges a new Arr object.
@@ -180,7 +180,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function get($key, $default = null)
     {
         if (is_null($key)) {
-            return $this->_data;
+            return $this->data;
         }
 
         if (is_array($key)) {
@@ -192,7 +192,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             return $return;
         }
 
-        if (!static::dotGet($key, $this->_data, $return)) {
+        if (!static::dotGet($key, $this->data, $return)) {
             return static::getItemValue($default);
         }
 
@@ -206,7 +206,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function getArray()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -221,7 +221,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function set($key, $value = null)
     {
         if (is_null($key)) {
-            $this->_data = $value;
+            $this->data = $value;
 
             return $this;
         }
@@ -232,7 +232,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             }
         }
 
-        static::dotSet($key, $this->_data, $value);
+        static::dotSet($key, $this->data, $value);
 
         return $this;
     }
@@ -247,7 +247,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function keyExists($key)
     {
-        return static::dotGet($key, $this->_data, $return);
+        return static::dotGet($key, $this->data, $return);
     }
 
     /**
@@ -267,12 +267,12 @@ class Arr implements ArrayAccess, Iterator, Countable
             throw new InvalidArgumentException('First parameter must be an array or string.');
         }
 
-        foreach ($this->_data as $key => &$value) {
+        foreach ($this->data as $key => &$value) {
             if (array_key_exists($key, $replace)) {
-                $this->_data[$replace[$key]] = $value;
-                unset($this->_data[$key]);
+                $this->data[$replace[$key]] = $value;
+                unset($this->data[$key]);
             } else {
-                $this->_data[$key] = $value;
+                $this->data[$key] = $value;
             }
         }
 
@@ -302,7 +302,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             return $return;
         }
 
-        static::dotSet($key, $this->_data, $oldValue, true);
+        static::dotSet($key, $this->data, $oldValue, true);
 
         return $oldValue;
     }
@@ -321,7 +321,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function toAssoc()
     {
-        if (($count = count($this->_data)) % 2 > 0) {
+        if (($count = count($this->data)) % 2 > 0) {
             throw new RangeException('Number of variables must be even.');
         }
         $keys = $values = array();
@@ -343,7 +343,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function isAssoc()
     {
-        foreach ($this->_data as $key => $unused) {
+        foreach ($this->data as $key => $unused) {
             if (!is_int($key)) {
                 return true;
             }
@@ -364,7 +364,7 @@ class Arr implements ArrayAccess, Iterator, Countable
     public function filterPrefixed($prefix = 'prefix_', $removePrefix = true)
     {
         $return = array();
-        foreach ($this->_data as $key => &$value) {
+        foreach ($this->data as $key => &$value) {
             if (preg_match('/^'.$prefix.'/', $key)) {
                 if ($removePrefix === true) {
                     $key = preg_replace('/^'.$prefix.'/', '', $key);
@@ -389,10 +389,10 @@ class Arr implements ArrayAccess, Iterator, Countable
     {
         $return = array();
         foreach ($keys as $key) {
-            if (isset($this->_data[$key])) {
-                $return[$key] = $this->_data[$key];
+            if (isset($this->data[$key])) {
+                $return[$key] = $this->data[$key];
                 if ($remove) {
-                    unset($this->_data[$key]);
+                    unset($this->data[$key]);
                 }
             }
         }
@@ -412,7 +412,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function insert($value, $pos)
     {
-        if (count($this->_data) < abs($pos)) {
+        if (count($this->data) < abs($pos)) {
             throw new OutOfBoundsException('Position larger than number of elements in array in which to insert.');
         }
         array_splice($original, $pos, 0, $value);
@@ -432,7 +432,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function insertBeforeKey($value, $key)
     {
-        $pos = array_search($key, array_keys($this->_data));
+        $pos = array_search($key, array_keys($this->data));
         if ($pos === false) {
             throw new OutOfBoundsException('Unknown key before which to insert the new value into the array.');
         }
@@ -452,7 +452,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function insertAfterKey($value, $key)
     {
-        $pos = array_search($key, array_keys($this->_data));
+        $pos = array_search($key, array_keys($this->data));
         if ($pos === false) {
             throw new OutOfBoundsException('Unknown key after which to insert the new value into the array.');
         }
@@ -472,7 +472,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function insertAfterValue($value, $search)
     {
-        $key = array_search($search, $this->_data);
+        $key = array_search($search, $this->data);
         if ($key === false) {
             throw new OutOfBoundsException('Unknown value after which to insert the new value into the array.');
         }
@@ -508,7 +508,7 @@ class Arr implements ArrayAccess, Iterator, Countable
             }
         };
 
-        return $flatten($this->_data, $currKey, $return, $glue, $indexed, $flatten);
+        return $flatten($this->data, $currKey, $return, $glue, $indexed, $flatten);
     }
 
     /**
@@ -560,7 +560,7 @@ class Arr implements ArrayAccess, Iterator, Countable
                 throw new InvalidArgumentException('Arr::merge() - all arguments must be arrays.');
             }
 
-            $this->_data = $merge($this->_data, $arr, $merge);
+            $this->data = $merge($this->data, $arr, $merge);
         }
 
         return $this;
@@ -578,7 +578,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function prepend($key, $value = null)
     {
-        $this->_data = (is_array($key) ? $key : array($key => $value)) + $this->_data;
+        $this->data = (is_array($key) ? $key : array($key => $value)) + $this->data;
 
         return $this;
     }
@@ -593,7 +593,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function count()
     {
-        return count($this->_data);
+        return count($this->data);
     }
 
     //</editor-fold>
@@ -664,7 +664,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function current()
     {
-        return current($this->_data);
+        return current($this->data);
     }
 
     /**
@@ -676,7 +676,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function key()
     {
-        return key($this->_data);
+        return key($this->data);
     }
 
     /**
@@ -688,7 +688,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function next()
     {
-        next($this->_data);
+        next($this->data);
     }
 
     /**
@@ -700,7 +700,7 @@ class Arr implements ArrayAccess, Iterator, Countable
      */
     public function rewind()
     {
-        return reset($this->_data);
+        return reset($this->data);
     }
 
     /**
