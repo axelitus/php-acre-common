@@ -258,4 +258,29 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $expected = "This\tis\ta\ttest\tstring. If %s is present ¿does this work?";
         $this->assertEquals($expected, $output);
     }
+
+    /**
+     * Tests for Str::replace()
+     *
+     * @test
+     */
+    public function testReplace()
+    {
+        $input = <<<'ORIGINAL'
+Peter Piper picked a peck of pickled peppers.
+A peck of pickled peppers Peter Piper picked.
+If Peter Piper picked a peck of pickled peppers,
+Where's the peck of pickled peppers Peter Piper picked?
+ORIGINAL;
+        $search = 'pickled peppers';
+        $replace = 'pepperish pickles';
+        $output = Str::replace($input, $search, $replace);
+        $expected = <<<'EXPECTED'
+Peter Piper picked a peck of pepperish pickles.
+A peck of pepperish pickles Peter Piper picked.
+If Peter Piper picked a peck of pepperish pickles,
+Where's the peck of pepperish pickles Peter Piper picked?
+EXPECTED;
+        $this->assertEquals($expected, $output);
+    }
 }
