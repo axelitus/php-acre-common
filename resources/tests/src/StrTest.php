@@ -239,4 +239,23 @@ class StrTest extends \PHPUnit_Framework_TestCase
         $expected = 'Two_Words';
         $this->assertEquals($expected, $output);
     }
+
+    /**
+     * Tests for Str::sprintf()
+     *
+     * @test
+     */
+    public function testNsprintf()
+    {
+        $test_string = 'This%tab$sis%tab$sa%tab$stest%tab$sstring.';
+        $output = Str::sprintf($test_string);
+        $expected = "This\tis\ta\ttest\tstring.";
+        $this->assertEquals($expected, $output);
+
+        // Test if a string with %s works
+        $test_string = 'This%tab$sis%tab$sa%tab$stest%tab$sstring. If %s is present ¿does this work?';
+        $output = Str::sprintf($test_string);
+        $expected = "This\tis\ta\ttest\tstring. If %s is present ¿does this work?";
+        $this->assertEquals($expected, $output);
+    }
 }
