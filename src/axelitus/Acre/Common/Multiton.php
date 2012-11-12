@@ -30,7 +30,7 @@ abstract class Multiton
      * @static
      * @var mixed   The singleton's instances array
      **/
-    protected static $_instances = array();
+    protected static $instances = array();
 
     /**
      * Prevent this class from being instantiated (but allow sub-classes to create new instances).
@@ -91,17 +91,17 @@ abstract class Multiton
      */
     public static function instance($key, $params = null)
     {
-        if (empty(static::$_instances) or !isset(static::$_instances[$key]) or !static::$_instances[$key] instanceof static) {
-            static::$_instances[$key] = new static();
-            if (method_exists(static::$_instances[$key], static::INIT_METHOD) and is_callable(array(static::$_instances[$key],
+        if (empty(static::$instances) or !isset(static::$instances[$key]) or !static::$instances[$key] instanceof static) {
+            static::$instances[$key] = new static();
+            if (method_exists(static::$instances[$key], static::INIT_METHOD) and is_callable(array(static::$instances[$key],
                                                                                                     static::INIT_METHOD
                                                                                               ))
             ) {
-                call_user_func_array(array(static::$_instances[$key], static::INIT_METHOD), func_get_args());
+                call_user_func_array(array(static::$instances[$key], static::INIT_METHOD), func_get_args());
             }
         }
 
-        return static::$_instances[$key];
+        return static::$instances[$key];
     }
 
     /**
@@ -112,8 +112,8 @@ abstract class Multiton
      */
     public static function removeInstance($key)
     {
-        static::$_instances[$key] = null;
-        unset(static::$_instances[$key]);
+        static::$instances[$key] = null;
+        unset(static::$instances[$key]);
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class Multiton
      */
     public static function clearInstances()
     {
-        static::$_instances = array();
+        static::$instances = array();
     }
 
     /**
