@@ -561,7 +561,7 @@ class Arr implements ArrayAccess, Iterator, Countable
 
         $arrays = func_get_args();
         foreach ($arrays as &$arr) {
-            if (!is_array($arr) and !($arr instanceof \ArrayAccess)) {
+            if (!is_array($arr)) {
                 throw new InvalidArgumentException('Arr::merge() - all arguments must be arrays.');
             }
 
